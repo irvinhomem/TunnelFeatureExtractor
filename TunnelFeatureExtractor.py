@@ -1,4 +1,4 @@
-from scapy.all import *
+#from scapy.all import *
 
 import logging
 
@@ -8,6 +8,7 @@ class TunnelFeatureExtractor(object):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
         self.logger.debug("Testing debug message")
+        print("Passed logging message")
 
 
 
