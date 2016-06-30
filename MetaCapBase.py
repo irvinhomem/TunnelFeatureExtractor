@@ -6,16 +6,17 @@ import os
 class MetaCapBase(object):
 
     def __init__(self, base_location=None):
+        logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         #self.logger.setLevel(logging.INFO)
-        #self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(logging.DEBUG)
         #self.logger.setLevel(logging.WARNING)
 
         self.packetBase = []
         self.base_loc = base_location
 
-        self.logger.debug("Testing logger debug message")
-        print("Logger Level: %s", str(self.logger.getEffectiveLevel()))
+        #self.logger.debug("Testing logger debug message")
+        #print("Logger Level: %s", str(self.logger.getEffectiveLevel()))
 
         if base_location is None:
             #Check for config file
@@ -37,7 +38,7 @@ class MetaCapBase(object):
                                 self.logger.debug("Loaded CapBase path: %s", self.base_loc)
                                 # self.logger.info("test info")
                                 # self.logger.warning("test warning")
-                                print('test')
+                                #print('test')
             except:
                 self.logger.warning("base_loc_config does not exist. Create base_loc_config file")
                 #If config file doesn't exist create it

@@ -17,6 +17,7 @@ class MetaPacketCap(object):
         :return:
         '''
 
+        logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         #self.logger.setLevel(logging.INFO)
         self.logger.setLevel(logging.DEBUG)
