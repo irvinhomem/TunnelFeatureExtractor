@@ -1,3 +1,5 @@
 
 .idea/
 capbase/
+base_loc_config.conf
+__pycache__/

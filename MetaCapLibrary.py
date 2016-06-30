@@ -1,5 +1,5 @@
-from PacketAnalyzer import PacketAnalyzer
-from PacketDigester import PacketDigester
+#from PacketAnalyzer import PacketAnalyzer
+#from PacketDigester import PacketDigester
 from MetaPacketCap import MetaPacketCap
 from MetaCapBase import MetaCapBase
 
@@ -17,8 +17,8 @@ class MetaCapLibrary(object):
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.INFO)
-        #self.logger.setLevel(logging.DEBUG)
+        #self.logger.setLevel(logging.INFO)
+        self.logger.setLevel(logging.DEBUG)
 
         self.packetLibrary = []
         root = tk.Tk()
@@ -30,7 +30,7 @@ class MetaCapLibrary(object):
         #options['filetypes'] = [('all files', '.*'), ('text files', '.txt')]
         options['filetypes'] = [('Network Traffic Captures', '*.pcapng *.pcap *.cap'), ('Pcap-ng files', '*.pcapng'),
                                 ('Pcap files', '*.pcap'), ('text files', '*.txt'), ('all files', '.*')]
-        options['initialdir'] = '/home/irvin/PycharmProjects/scapy_tutorial/NewPcaps/TunnelCaps_2016'
+        options['initialdir'] = '/home/irvin/pcaps/Pcaps-2016-June'
         #options['initialfile'] = 'myfile.txt'
         #options['parent'] = root
         #options['title'] = 'This is a title'
@@ -252,7 +252,7 @@ class MetaCapLibrary(object):
 # ####### Create a CapLibrary object  ########################################
 #httpCapLib = MetaCapLibrary() # <<-----------
 #ftpCapLib = MetaCapLibrary()
-#httpOvDnsCapLib = MetaCapLibrary()
+httpOvDnsCapLib = MetaCapLibrary()
 #ftpOvDnsCapLib = MetaCapLibrary()
 
 # ####### Load a CapLibrary from the PCAP files  #############################
