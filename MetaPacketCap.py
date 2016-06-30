@@ -19,8 +19,8 @@ class MetaPacketCap(object):
 
         self.logger = logging.getLogger(__name__)
         #self.logger.setLevel(logging.INFO)
-        #self.logger.setLevel(logging.DEBUG)
-        self.logger.setLevel(logging.WARNING)
+        self.logger.setLevel(logging.DEBUG)
+        #self.logger.setLevel(logging.WARNING)
 
         self.pcapFilePath = file_path
         self.pcapFileName = ''

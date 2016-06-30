@@ -8,11 +8,14 @@ class MetaCapBase(object):
     def __init__(self, base_location=None):
         self.logger = logging.getLogger(__name__)
         #self.logger.setLevel(logging.INFO)
-        self.logger.setLevel(logging.DEBUG)
+        #self.logger.setLevel(logging.DEBUG)
         #self.logger.setLevel(logging.WARNING)
 
         self.packetBase = []
         self.base_loc = base_location
+
+        self.logger.debug("Testing logger debug message")
+        print("Logger Level: %s", str(self.logger.getEffectiveLevel()))
 
         if base_location is None:
             #Check for config file
@@ -32,8 +35,8 @@ class MetaCapBase(object):
                                 self.base_loc == filedialog.askdirectory(initialdir='', title='Select Base Location home-dir')
                             else:
                                 self.logger.debug("Loaded CapBase path: %s", self.base_loc)
-                                self.logger.info("test info")
-                                self.logger.warning("test warning")
+                                # self.logger.info("test info")
+                                # self.logger.warning("test warning")
                                 print('test')
             except:
                 self.logger.warning("base_loc_config does not exist. Create base_loc_config file")
