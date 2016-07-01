@@ -1,7 +1,9 @@
 #from PacketAnalyzer import PacketAnalyzer
 #from PacketDigester import PacketDigester
-from MetaPacketCap import MetaPacketCap
+from PcapFeatures import PcapFeatures
 from CapBase import CapBase
+
+from scapy.all import PcapReader
 
 import matplotlib.pyplot as plt
 #import matplotlib.gridspec as gridspec
@@ -21,7 +23,7 @@ class CapLibrary(object):
         #self.logger.setLevel(logging.INFO)
         self.logger.setLevel(logging.DEBUG)
 
-        self.packetLibrary = []
+        #self.packetLibrary = []
         self.packet_paths_library = []
         root = tk.Tk()
         root.withdraw()
@@ -45,12 +47,12 @@ class CapLibrary(object):
         self.ax = None
         self.gs = None
 
-    def add_to_lib(self, newMetaCap):
-        self.packetLibrary.append(newMetaCap)
+    # def add_to_lib(self, newMetaCap):
+    #     self.packetLibrary.append(newMetaCap)
 
-    def add_to_base(self, newMetaCap):
-
-        return
+    # def add_to_base(self, newMetaCap):
+    #
+    #     return
 
     def load_single_pcap(self):
 
@@ -74,23 +76,23 @@ class CapLibrary(object):
 
         return file_paths
 
-    def load_pcaps_from_files(self, protocol_base='unknown'):
-        file_paths = filedialog.askopenfilenames(**self.file_opt)
-
-        #If protocol base is not known, ASK!
-        if protocol_base is None or protocol_base == '' or protocol_base == 'unknown':
-            self.logger.info("Protocol Base is: %s" % (protocol_base))
-            protocol_base = simpledialog.askstring(
-                "Base Protocol", "What is the possible base protocol? http, ftp, ...?", initialvalue="unknown")
-
-        self.logger.info('Loading pcaps ...')
-        for capfile_path in file_paths:
-            #print(file_path)
-            self.add_to_lib(MetaPacketCap(capfile_path, protocol_base))
-            print(len(self.get_packet_library()))
-            self.write_path_to_base(protocol_base, capfile_path)
-
-        return file_paths
+    # def load_pcaps_from_files(self, protocol_base='unknown'):
+    #     file_paths = filedialog.askopenfilenames(**self.file_opt)
+    #
+    #     #If protocol base is not known, ASK!
+    #     if protocol_base is None or protocol_base == '' or protocol_base == 'unknown':
+    #         self.logger.info("Protocol Base is: %s" % (protocol_base))
+    #         protocol_base = simpledialog.askstring(
+    #             "Base Protocol", "What is the possible base protocol? http, ftp, ...?", initialvalue="unknown")
+    #
+    #     self.logger.info('Loading pcaps ...')
+    #     for capfile_path in file_paths:
+    #         #print(file_path)
+    #         self.add_to_lib(PcapFeatures(capfile_path, protocol_base))
+    #         print(len(self.get_packet_library()))
+    #         self.write_path_to_base(protocol_base, capfile_path)
+    #
+    #     return file_paths
 
     def write_path_to_base(self, base_file_name, f_path):
         if self.capbase.base_loc == '':
@@ -121,6 +123,51 @@ class CapLibrary(object):
 
     #def load_specific_from_base(self, protocolLabel):
 
+    def read_packets_from_pcap_lib(self, protocolLabel, filterContainsTerm=None):
+        self.logger.debug('Reading from %s base file' % protocolLabel)
+        p = pathlib.Path(self.capbase.base_loc + '/' + protocolLabel)
+        pathList = []
+        skipped = 0
+        try:
+            with p.open('r') as rf:
+                if filterContainsTerm is None or filterContainsTerm == '':
+                    pathList = rf.readlines()
+                else:
+                    for line in rf:
+                        if str(filterContainsTerm).lower() in str(line).rsplit('/',1)[1].lower():
+                            pathList.append(line)
+                        else:
+                            #print("Filter term missing in base file: "+ filterContainsTerm)
+                            skipped +=1
+                #pathList = rf.readlines()
+        except:
+            self.logger.warning("Base File Path does not exist ...")
+
+        self.logger.info(str("Skipped/Filtered out entries from base: %i" % skipped))
+
+        if len(pathList) > 0:
+            self.logger.debug("First Path: %s" % pathList[0])
+            pktReader = PcapReader(str(pathList[0]).strip())
+            for pkt in pktReader:
+                print(len(pkt))
+
+            # while True:
+            #     pkt = pktReader.read_packet()
+            #     if pkt is None:
+            #         break
+            #     else:
+            #         print(len(pkt))
+
+            #for counter, file_path in enumerate(pathList):
+                # self.packetLibrary.append(PcapFeatures(str(file_path).rstrip(), protocolLabel))
+                # self.logger.debug(str("CapLibEntry: %i" % (counter + 1)))
+        else:
+            self.logger.warning("Base Protocol file is empty.")
+
+        return
+
+
+
     def load_specific_proto_from_base(self, protocolLabel, filterContainsTerm=None):
         #Load packet capture paths from specific protocol base file/store
         # ('protocolLabel' is label of the base store file to check)
@@ -150,7 +197,7 @@ class CapLibrary(object):
 
         if len(pathList) > 0:
             for counter,file_path in enumerate(pathList):
-                self.packetLibrary.append(MetaPacketCap(str(file_path).rstrip(),protocolLabel))
+                self.packetLibrary.append(PcapFeatures(str(file_path).rstrip(), protocolLabel))
                 self.logger.debug(str("CapLibEntry: %i" % (counter+1)))
         else:
             self.logger.warning("Base Protocol file is empty.")
