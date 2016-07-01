@@ -73,47 +73,6 @@ class PcapFeatures(object):
             h += prob * math.log((1/prob),2)
         return h
 
-#------------------------------------#
-######   HTTP Related Methods   ######
-#------------------------------------#
-    def get_ip_pkt_http_req_entropy(self):
-        '''
-        :return:
-        '''
-        self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP])))
-                                  for pkt in self.pktReader if TCP in pkt and pkt[TCP].dport == 80]
-        return self.pktCharEntropySeq
-
-    def get_ip_pkt_len_http_req(self):
-        self.specificPktLens = [len(pkt[IP])
-                                for pkt in self.pktReader if TCP in pkt and pkt[TCP].dport == 80]
-        return self.specificPktLens
-
-    def getHttpReqEntropy(self):
-        '''
-        Get the Entropy of only the HTTP Request characters in TCP packets
-        that have a payload and have the destination port = 80
-        :return:
-        '''
-        self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP][TCP][Raw].load)))
-                                  for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 80]
-        return self.pktCharEntropySeq
-
-    def getCompressedHttpReqEntropy(self):
-        '''
-        Get the Entropy of only the HTTP Request characters in TCP packets
-        that have a payload and have the destination port = 80
-        :return:
-        '''
-        self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(zl.compress(pkt[IP][TCP][Raw].load))))
-                                  for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 80]
-        return self.pktCharEntropySeq
-
-    def getHttpReqLen(self):
-        self.specificPktLens = [len(pkt[IP][TCP][Raw].load)
-                                for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 80]
-        return self.specificPktLens
-
 #-----------------------------------#
 ###### DNS Related Methods ##########
 #-----------------------------------#
@@ -170,61 +129,103 @@ class PcapFeatures(object):
                                   for pkt in self.pktReader if IP in pkt]
         return self.pktCharEntropySeq
 
-#---------------------------------#
-###### FTP related Methods   ######
-#---------------------------------#
-    def getftpReqLen(self):
-        self.specificPktLens = [len(pkt[IP][TCP][Raw].load)
-                                for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 21]
-        return self.specificPktLens
+# #------------------------------------#
+# ######   HTTP Related Methods   ######
+# #------------------------------------#
+#     def get_ip_pkt_http_req_entropy(self):
+#         '''
+#         :return:
+#         '''
+#         self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP])))
+#                                   for pkt in self.pktReader if TCP in pkt and pkt[TCP].dport == 80]
+#         return self.pktCharEntropySeq
+#
+#     def get_ip_pkt_len_http_req(self):
+#         self.specificPktLens = [len(pkt[IP])
+#                                 for pkt in self.pktReader if TCP in pkt and pkt[TCP].dport == 80]
+#         return self.specificPktLens
+#
+#     def getHttpReqEntropy(self):
+#         '''
+#         Get the Entropy of only the HTTP Request characters in TCP packets
+#         that have a payload and have the destination port = 80
+#         :return:
+#         '''
+#         self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP][TCP][Raw].load)))
+#                                   for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 80]
+#         return self.pktCharEntropySeq
+#
+#     def getCompressedHttpReqEntropy(self):
+#         '''
+#         Get the Entropy of only the HTTP Request characters in TCP packets
+#         that have a payload and have the destination port = 80
+#         :return:
+#         '''
+#         self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(zl.compress(pkt[IP][TCP][Raw].load))))
+#                                   for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 80]
+#         return self.pktCharEntropySeq
+#
+#     def getHttpReqLen(self):
+#         self.specificPktLens = [len(pkt[IP][TCP][Raw].load)
+#                                 for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 80]
+#         return self.specificPktLens
 
-    def get_ip_pkt_len_ftp_req(self):
-        self.specificPktLens = [len(pkt[IP])
-                                for pkt in self.pktReader if TCP in pkt and pkt[TCP].dport == 21]
-        return self.specificPktLens
 
-    def getFtpReqEntropy(self):
-        self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP][TCP][Raw].load)))
-                                  for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 21]
-        return self.pktCharEntropySeq
-
-    def getCompressedFtpReqEntropy(self):
-        self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(zl.compress(pkt[IP][TCP][Raw].load))))
-                                  for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 21]
-        return self.pktCharEntropySeq
-
-    def getFtpCommandChannelEntropy(self):
-        self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP][TCP][Raw].load)))
-                                  for pkt in self.pktReader if TCP in pkt and Raw in pkt
-                                  and (pkt[TCP].dport==21 or pkt[TCP].sport==21)]
-        return self.pktCharEntropySeq
-
-    def getFtpCommandChannelLens(self):
-        self.pktCharEntropySeq = [len(pkt[IP][TCP][Raw].load)
-                                  for pkt in self.pktReader if TCP in pkt and Raw in pkt
-                                  and (pkt[TCP].dport==21 or pkt[TCP].sport==21)]
-        return self.pktCharEntropySeq
-
-    def get_ftp_cmd_channel_pkt_entropy(self):
-        self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP])))
-                                  for pkt in self.pktReader
-                                  if TCP in pkt and (pkt[TCP].dport==21 or pkt[TCP].sport==21)]
-        return self.pktCharEntropySeq
-
-    def get_ip_pkt_ftp_req_entropy(self):
-        self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP])))
-                                  for pkt in self.pktReader if TCP in pkt and pkt[TCP].dport == 21]
-        return self.pktCharEntropySeq
-
-    def get_ftp_client_ip_pkt_lens(self, clientIpAddr):
-        self.specificPktLens = [len(pkt[IP])
-                                for pkt in self.pktReader if TCP in pkt and pkt[IP].src == clientIpAddr]
-        return self.specificPktLens
-
-    def get_ftp_client_ip_pkt_entropy(self, clientIpAddr):
-        self.specificPktLens = [self.calcEntropy(Counter(bytes(pkt[IP])))
-                                for pkt in self.pktReader if TCP in pkt and pkt[IP].src == clientIpAddr]
-        return self.specificPktLens
+# #---------------------------------#
+# ###### FTP related Methods   ######
+# #---------------------------------#
+#     def getftpReqLen(self):
+#         self.specificPktLens = [len(pkt[IP][TCP][Raw].load)
+#                                 for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 21]
+#         return self.specificPktLens
+#
+#     def get_ip_pkt_len_ftp_req(self):
+#         self.specificPktLens = [len(pkt[IP])
+#                                 for pkt in self.pktReader if TCP in pkt and pkt[TCP].dport == 21]
+#         return self.specificPktLens
+#
+#     def getFtpReqEntropy(self):
+#         self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP][TCP][Raw].load)))
+#                                   for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 21]
+#         return self.pktCharEntropySeq
+#
+#     def getCompressedFtpReqEntropy(self):
+#         self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(zl.compress(pkt[IP][TCP][Raw].load))))
+#                                   for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 21]
+#         return self.pktCharEntropySeq
+#
+#     def getFtpCommandChannelEntropy(self):
+#         self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP][TCP][Raw].load)))
+#                                   for pkt in self.pktReader if TCP in pkt and Raw in pkt
+#                                   and (pkt[TCP].dport==21 or pkt[TCP].sport==21)]
+#         return self.pktCharEntropySeq
+#
+#     def getFtpCommandChannelLens(self):
+#         self.pktCharEntropySeq = [len(pkt[IP][TCP][Raw].load)
+#                                   for pkt in self.pktReader if TCP in pkt and Raw in pkt
+#                                   and (pkt[TCP].dport==21 or pkt[TCP].sport==21)]
+#         return self.pktCharEntropySeq
+#
+#     def get_ftp_cmd_channel_pkt_entropy(self):
+#         self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP])))
+#                                   for pkt in self.pktReader
+#                                   if TCP in pkt and (pkt[TCP].dport==21 or pkt[TCP].sport==21)]
+#         return self.pktCharEntropySeq
+#
+#     def get_ip_pkt_ftp_req_entropy(self):
+#         self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP])))
+#                                   for pkt in self.pktReader if TCP in pkt and pkt[TCP].dport == 21]
+#         return self.pktCharEntropySeq
+#
+#     def get_ftp_client_ip_pkt_lens(self, clientIpAddr):
+#         self.specificPktLens = [len(pkt[IP])
+#                                 for pkt in self.pktReader if TCP in pkt and pkt[IP].src == clientIpAddr]
+#         return self.specificPktLens
+#
+#     def get_ftp_client_ip_pkt_entropy(self, clientIpAddr):
+#         self.specificPktLens = [self.calcEntropy(Counter(bytes(pkt[IP])))
+#                                 for pkt in self.pktReader if TCP in pkt and pkt[IP].src == clientIpAddr]
+#         return self.specificPktLens
 
 #--------------------------------------#
 ######   Plotting Related methods   ####
