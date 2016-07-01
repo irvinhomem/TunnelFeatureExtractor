@@ -1,7 +1,7 @@
 #from PacketAnalyzer import PacketAnalyzer
 #from PacketDigester import PacketDigester
 from MetaPacketCap import MetaPacketCap
-from MetaCapBase import MetaCapBase
+from CapBase import CapBase
 
 import matplotlib.pyplot as plt
 #import matplotlib.gridspec as gridspec
@@ -13,7 +13,7 @@ import os.path
 import pathlib
 import logging
 
-class MetaCapLibrary(object):
+class CapLibrary(object):
 
     def __init__(self):
         logging.basicConfig(level=logging.INFO)
@@ -22,6 +22,7 @@ class MetaCapLibrary(object):
         self.logger.setLevel(logging.DEBUG)
 
         self.packetLibrary = []
+        self.packet_paths_library = []
         root = tk.Tk()
         root.withdraw()
 
@@ -37,7 +38,7 @@ class MetaCapLibrary(object):
         #options['title'] = 'This is a title'
         options['multiple'] = 'True'
 
-        self.capbase = MetaCapBase()
+        self.capbase = CapBase()
         self.logger.debug(str('capbase directory: ' + self.capbase.get_base_loc()))
 
         self.fig = None
@@ -55,8 +56,23 @@ class MetaCapLibrary(object):
 
         return
 
-    # def load_pcaps(self):
-    #     return
+    def load_only_pcap_paths_to_Lib(self, protocol_base='unknown'):
+        file_paths = filedialog.askopenfilenames(**self.file_opt)
+
+        # If protocol base is not known, ASK!
+        if protocol_base is None or protocol_base == '' or protocol_base == 'unknown':
+            self.logger.info("Protocol Base is: %s" % (protocol_base))
+            protocol_base = simpledialog.askstring(
+                "Base Protocol", "What is the possible base protocol? http, ftp, ...?", initialvalue="unknown")
+
+        self.logger.info('Loading pcaps ...')
+        for capfile_path in file_paths:
+            # print(file_path)
+            self.packet_paths_library.append(capfile_path)
+            self.logger.debug("Loaded path: %i" % len(self.packet_paths_library))
+            self.write_path_to_base(protocol_base, capfile_path)
+
+        return file_paths
 
     def load_pcaps_from_files(self, protocol_base='unknown'):
         file_paths = filedialog.askopenfilenames(**self.file_opt)
@@ -65,11 +81,12 @@ class MetaCapLibrary(object):
         if protocol_base is None or protocol_base == '' or protocol_base == 'unknown':
             self.logger.info("Protocol Base is: %s" % (protocol_base))
             protocol_base = simpledialog.askstring(
-                "Base Protocol", "What is the possible base protocol?", initialvalue="unknown")
+                "Base Protocol", "What is the possible base protocol? http, ftp, ...?", initialvalue="unknown")
 
+        self.logger.info('Loading pcaps ...')
         for capfile_path in file_paths:
             #print(file_path)
-            self.add_to_lib(MetaPacketCap(capfile_path,protocol_base))
+            self.add_to_lib(MetaPacketCap(capfile_path, protocol_base))
             print(len(self.get_packet_library()))
             self.write_path_to_base(protocol_base, capfile_path)
 
@@ -98,6 +115,9 @@ class MetaCapLibrary(object):
 
     def get_packet_library(self):
         return self.packetLibrary
+
+    def get_packet_paths_library(self):
+        return self.packet_paths_library
 
     #def load_specific_from_base(self, protocolLabel):
 
@@ -251,14 +271,18 @@ class MetaCapLibrary(object):
 
 
 # ####### Create a CapLibrary object  ########################################
-#httpCapLib = MetaCapLibrary() # <<-----------
-#ftpCapLib = MetaCapLibrary()
-httpOvDnsCapLib = MetaCapLibrary()
-#ftpOvDnsCapLib = MetaCapLibrary()
+#httpCapLib = CapLibrary() # <<-----------
+#ftpCapLib = CapLibrary()
+
+#httpOvDnsCapLib = CapLibrary()
+#ftpOvDnsCapLib = CapLibrary()
 
 # ####### Load a CapLibrary from the PCAP files  #############################
 # #httpCapLib.load_pcaps_from_files('http')
 # #ftpCapLib.load_pcaps_from_files('ftp')
+
+#httpOvDnsCapLib.load_only_pcap_paths_to_Lib('HTTPovDNS')
+#ftpOvDnsCapLib.load_only_pcap_paths_to_Lib('FTPovDNS')
 
 # ####### Load a CapLibrary from the 'base' location and filter according to the given filter  ###############
 #httpCapLib.load_specific_proto_from_base('http')

@@ -3,7 +3,7 @@ import pathlib
 import logging
 import os
 
-class MetaCapBase(object):
+class CapBase(object):
 
     def __init__(self, base_location=None):
         logging.basicConfig(level=logging.INFO)
