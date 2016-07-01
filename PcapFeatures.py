@@ -129,6 +129,11 @@ class PcapFeatures(object):
                                   for pkt in self.pktReader if IP in pkt]
         return self.pktCharEntropySeq
 
+    def get_ip_pkt_lengths(self):
+        self.pktIPLenSeq = [len(pkt[IP])for pkt in self.pktReader if IP in pkt]
+
+        return self.pktIPLenSeq
+
 # #------------------------------------#
 # ######   HTTP Related Methods   ######
 # #------------------------------------#
