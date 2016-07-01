@@ -23,7 +23,6 @@ class CapLibrary(object):
         #self.logger.setLevel(logging.INFO)
         self.logger.setLevel(logging.DEBUG)
 
-        #self.packetLibrary = []
         self.packet_paths_library = []
         root = tk.Tk()
         root.withdraw()
@@ -47,13 +46,6 @@ class CapLibrary(object):
         self.ax = None
         self.gs = None
 
-    # def add_to_lib(self, newMetaCap):
-    #     self.packetLibrary.append(newMetaCap)
-
-    # def add_to_base(self, newMetaCap):
-    #
-    #     return
-
     def load_single_pcap(self):
 
         return
@@ -76,24 +68,6 @@ class CapLibrary(object):
 
         return file_paths
 
-    # def load_pcaps_from_files(self, protocol_base='unknown'):
-    #     file_paths = filedialog.askopenfilenames(**self.file_opt)
-    #
-    #     #If protocol base is not known, ASK!
-    #     if protocol_base is None or protocol_base == '' or protocol_base == 'unknown':
-    #         self.logger.info("Protocol Base is: %s" % (protocol_base))
-    #         protocol_base = simpledialog.askstring(
-    #             "Base Protocol", "What is the possible base protocol? http, ftp, ...?", initialvalue="unknown")
-    #
-    #     self.logger.info('Loading pcaps ...')
-    #     for capfile_path in file_paths:
-    #         #print(file_path)
-    #         self.add_to_lib(PcapFeatures(capfile_path, protocol_base))
-    #         print(len(self.get_packet_library()))
-    #         self.write_path_to_base(protocol_base, capfile_path)
-    #
-    #     return file_paths
-
     def write_path_to_base(self, base_file_name, f_path):
         if self.capbase.base_loc == '':
             self.logger.warning("Base not yet set")
@@ -115,15 +89,12 @@ class CapLibrary(object):
             file.write(f_path+'\n')
         return
 
-    def get_packet_library(self):
-        return self.packetLibrary
-
     def get_packet_paths_library(self):
         return self.packet_paths_library
 
     #def load_specific_from_base(self, protocolLabel):
 
-    def read_packets_from_pcap_lib(self, protocolLabel, filterContainsTerm=None):
+    def get_paths_from_specific_lib_in_pcap_base(self, protocolLabel, filterContainsTerm=None):
         self.logger.debug('Reading from %s base file' % protocolLabel)
         p = pathlib.Path(self.capbase.base_loc + '/' + protocolLabel)
         pathList = []
@@ -145,64 +116,15 @@ class CapLibrary(object):
 
         self.logger.info(str("Skipped/Filtered out entries from base: %i" % skipped))
 
-        if len(pathList) > 0:
-            self.logger.debug("First Path: %s" % pathList[0])
-            pktReader = PcapReader(str(pathList[0]).strip())
-            for pkt in pktReader:
-                print(len(pkt))
+        # if len(pathList) > 0:
+        #     self.logger.debug("First Path: %s" % pathList[0])
+        #     pktReader = PcapReader(str(pathList[0]).strip())
+        #     for pkt in pktReader:
+        #         print(len(pkt))
+        # else:
+        #     self.logger.warning("Base Protocol file is empty.")
 
-            # while True:
-            #     pkt = pktReader.read_packet()
-            #     if pkt is None:
-            #         break
-            #     else:
-            #         print(len(pkt))
-
-            #for counter, file_path in enumerate(pathList):
-                # self.packetLibrary.append(PcapFeatures(str(file_path).rstrip(), protocolLabel))
-                # self.logger.debug(str("CapLibEntry: %i" % (counter + 1)))
-        else:
-            self.logger.warning("Base Protocol file is empty.")
-
-        return
-
-
-
-    def load_specific_proto_from_base(self, protocolLabel, filterContainsTerm=None):
-        #Load packet capture paths from specific protocol base file/store
-        # ('protocolLabel' is label of the base store file to check)
-        # ('filterContainsTerm' checks the filenames of the pcap files for the given term,
-        # so name your pcap files appropriately with indicative terms of what you expect in them)
-        #Read protocol base file store and append entries into local packetLibrary list
-        self.logger.debug('Reading from %s base file' % protocolLabel)
-        p = pathlib.Path(self.capbase.base_loc + '/' + protocolLabel)
-        pathList = []
-        skipped = 0
-        try:
-            with p.open('r') as rf:
-                if filterContainsTerm is None or filterContainsTerm == '':
-                    pathList = rf.readlines()
-                else:
-                    for line in rf:
-                        if str(filterContainsTerm).lower() in str(line).rsplit('/',1)[1].lower():
-                            pathList.append(line)
-                        else:
-                            #print("Filter term missing in base file: "+ filterContainsTerm)
-                            skipped +=1
-                #pathList = rf.readlines()
-        except:
-            self.logger.warning("Base File Path does not exist ...")
-
-        self.logger.info(str("Skipped/Filtered out entries from base: %i" % skipped))
-
-        if len(pathList) > 0:
-            for counter,file_path in enumerate(pathList):
-                self.packetLibrary.append(PcapFeatures(str(file_path).rstrip(), protocolLabel))
-                self.logger.debug(str("CapLibEntry: %i" % (counter+1)))
-        else:
-            self.logger.warning("Base Protocol file is empty.")
-
-        return
+        return pathList
 
     def load_all_from_bases(self):
         return
@@ -315,47 +237,3 @@ class CapLibrary(object):
             three_sigma_percent = round((three_sigma/len(yVarSet))*100, 2)
 
         return one_sigma_percent, two_sigma_percent, three_sigma_percent
-
-
-# ####### Create a CapLibrary object  ########################################
-#httpCapLib = CapLibrary() # <<-----------
-#ftpCapLib = CapLibrary()
-
-#httpOvDnsCapLib = CapLibrary()
-#ftpOvDnsCapLib = CapLibrary()
-
-# ####### Load a CapLibrary from the PCAP files  #############################
-# #httpCapLib.load_pcaps_from_files('http')
-# #ftpCapLib.load_pcaps_from_files('ftp')
-
-#httpOvDnsCapLib.load_only_pcap_paths_to_Lib('HTTPovDNS')
-#ftpOvDnsCapLib.load_only_pcap_paths_to_Lib('FTPovDNS')
-
-# ####### Load a CapLibrary from the 'base' location and filter according to the given filter  ###############
-#httpCapLib.load_specific_proto_from_base('http')
-#httpCapLib.load_specific_proto_from_base('http','http')   # <<-----------
-#print("Length: ",  len(httpCapLib.__getattribute__("packetLibrary")))
-#print("Length: ",  len(httpCapLib.get_packet_library()))    # <<-----------
-
-#ftpCapLib.load_specific_proto_from_base('ftp', 'ftp')
-#print("Length: ",  len(ftpCapLib.get_packet_library()))
-
-#httpOvDnsCapLib.load_specific_proto_from_base('http','dns')
-#ftpOvDnsCapLib.load_specific_proto_from_base('ftp','dns')
-
-# ####### Do PLOTS  #############################################
-#httpCapLib.doSuperPlot('HttpReqEntropy', "red") # <<-----------
-#httpCapLib.doSuperPlot('IpHttpReqEntropy', "red")
-#httpCapLib.doSuperPlot('HttpReqLen', "red")
-
-#httpCapLib.doSuperPlot('IpPacketEntropy', "red")
-
-#ftpCapLib.doSuperPlot('FtpReqEntropy', "red")
-#ftpCapLib.doSuperPlot('IpFtpReqEntropy', "red") #<--- This
-#ftpCapLib.doSuperPlot('FtpReqLen', "red")
-
-#ftpCapLib.doSuperPlot('IpPacketEntropy', "red")
-
-#httpOvDnsCapLib.doSuperPlot('IpPktDnsReqEntropy', 'red')
-#ftpOvDnsCapLib.doSuperPlot('IpPktDnsReqEntropy', 'red')
-

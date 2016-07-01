@@ -23,7 +23,7 @@ class PcapFeatures(object):
         self.logger.setLevel(logging.DEBUG)
         #self.logger.setLevel(logging.WARNING)
 
-        self.pcapFilePath = file_path
+        self.pcapFilePath = str(file_path).strip()
         self.pcapFileName = ''
         try:
             if len(file_path) > 0:
@@ -46,7 +46,12 @@ class PcapFeatures(object):
         self.ax = None #plt.axes()
 
         self.logger.info("Finished initializing and reading pcap file ...")
-        #self.logger.debug("Type : %s" % str(type(self.cap)))
+        self.logger.debug("Type : %s" % str(type(self.pktReader)))
+
+    def test_pkt_Reader(self):
+        self.logger.debug("Type : %s" % str(type(self.pktReader)))
+        pktlen_seq = [len(pkt[IP]) for pkt in self.pktReader if UDP in pkt]
+        self.logger.debug("Length of Seq: %i" % len(pktlen_seq))
 
     def add_proto_label(self, newProtoLabel):
         self.protocolLabel = newProtoLabel
