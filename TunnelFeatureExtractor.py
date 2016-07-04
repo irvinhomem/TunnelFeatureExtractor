@@ -51,21 +51,40 @@ class TunnelFeatureExtractor(object):
         #     pcap_feat.doPlot(lens_seq, 'r', 'DNS Req Entropy', 'Pkt #', 'Entropy')
 
     def get_feature_vectors_and_write_to_file(self, protoLabel):
-        feat_vect_seq = None
-        for count, single_file_path in enumerate(self.capLib.get_paths_from_specific_lib_in_pcap_base(protoLabel)):
-            self.logger.debug("Pcap File Path #: %i" % count)
-            curr_pcap_file_name = single_file_path.split('/',1)[1]
-            self.logger.debug("Current PCAP File name: %s" % curr_pcap_file_name)
-            pcap_feat = PcapFeatures(single_file_path, protoLabel)
+        # Check if directory exists (i.e. feature_base, and sub directory of HTTPovDNS / FTPovDNS)
+        self.make_sure_path_exists("feature_base/" + protoLabel)
 
-            #Choose the Feaeture to be extracted
-            #if:
-            feat_vect_seq = pcap_feat.getDnsReqLens()
-            #elif:
+        # Check if file exists
+        curr_feature_filename = "DNS_Layer_Req_Lengths.csv"
+        curr_feature_filePath = "feature_base/" + protoLabel + "/" + curr_feature_filename
+        try:
+            with open(curr_feature_filePath, mode='w') as csv_feature_file:
+                feature_vect_list = None
+                for count, single_file_path in enumerate(self.capLib.get_paths_from_specific_lib_in_pcap_base(protoLabel)):
+                    self.logger.debug("Pcap File Path #: %i" % count)
+                    curr_pcap_file_name = str(single_file_path).rsplit('/', 1)[1].strip()
+                    self.logger.debug("Current PCAP File name: %s" % curr_pcap_file_name)
+                    pcap_feat = PcapFeatures(single_file_path, protoLabel)
 
-            self.logger.debug("Req Len seq len: %i" % len(feat_vect_seq))
+                    #Choose the Feature to be extracted
+                    #if:
+                    feature_vect_list = pcap_feat.getDnsReqLens()
+                    #elif:
 
-            self.write_feature_vector_instance_to_file(feat_vect_seq, protoLabel, curr_pcap_file_name)
+                    self.logger.debug("Req Len seq len: %i" % len(feature_vect_list))
+
+                    self.logger.debug("Populating feature vector from PCAP [%s]" % (curr_pcap_file_name))
+                    vect_csv_writer = csv.writer(csv_feature_file, delimiter=',')
+                    # feature_vect_row = [pcapFilename] + feature_vect_list      #<==== Also works but stackoverflow says code below is faster
+                    feature_vect_list.insert(0, curr_pcap_file_name)
+                    # writerow takes a list i.e. []
+                    # vect_csv_writer.writerow(feature_vect_row)
+                    vect_csv_writer.writerow(feature_vect_list)
+
+        except IOError:
+            self.logger.debug("File IOError ... with: %s" % curr_feature_filename)
+
+            #self.write_feature_vector_instance_to_file(feat_vect_seq, protoLabel, curr_pcap_file_name)
         # return feat_vect_seq
 
     def write_feature_vector_instance_to_file(self, feature_vect_list, protocolLabel, pcapFilename):
@@ -73,15 +92,25 @@ class TunnelFeatureExtractor(object):
         self.make_sure_path_exists("feature_base/" + protocolLabel)
 
         # Check if file exists
-        curr_feature_filename = "feature_base/IP_Packet_Lengths.csv"
+        curr_feature_filename = "IP_Packet_Lengths.csv"
+        curr_feature_filePath = "feature_base/" + protocolLabel +"/"+ curr_feature_filename
         try:
-            with open(curr_feature_filename, mode='w') as csv_feature_file:
-                for count, vect_inst in enumerate(feature_vect_list):
-                    self.logger.debug("Populating feature vector from PCAP [%i]:[%s]" % (count, pcapFilename))
-                    vect_csv_writer = csv.writer(csv_feature_file, delimiter=',')
-                    feature_vect_row = [pcapFilename] + feature_vect_list
-                    # writerow takes a list i.e. []
-                    vect_csv_writer.writerow(feature_vect_row)
+            with open(curr_feature_filePath, mode='w') as csv_feature_file:
+                self.logger.debug("Populating feature vector from PCAP [%s]" % (pcapFilename))
+                vect_csv_writer = csv.writer(csv_feature_file, delimiter=',')
+                #feature_vect_row = [pcapFilename] + feature_vect_list      #<==== Also works but stackoverflow says code below is faster
+                feature_vect_list.insert(0, pcapFilename)
+                # writerow takes a list i.e. []
+                #vect_csv_writer.writerow(feature_vect_row)
+                vect_csv_writer.writerow(feature_vect_list)
+
+
+                # for count, vect_inst in enumerate(feature_vect_list):
+                #     self.logger.debug("Populating feature vector from PCAP [%i]:[%s]" % (count, pcapFilename))
+                #     vect_csv_writer = csv.writer(csv_feature_file, delimiter=',')
+                #     feature_vect_row = [pcapFilename] + feature_vect_list
+                #     # writerow takes a list i.e. []
+                #     vect_csv_writer.writerow(feature_vect_row)
 
         except IOError:
             self.logger.debug("File IOError ... with: %s" % curr_feature_filename)
