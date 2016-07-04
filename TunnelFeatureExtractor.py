@@ -4,6 +4,8 @@ from PcapFeatures import PcapFeatures
 from CapLibrary import CapLibrary
 
 import logging
+import errno
+import csv
 
 class TunnelFeatureExtractor(object):
 
@@ -48,21 +50,42 @@ class TunnelFeatureExtractor(object):
         #
         #     pcap_feat.doPlot(lens_seq, 'r', 'DNS Req Entropy', 'Pkt #', 'Entropy')
 
-    def get_feature_vectors(self, protocolLabel):
+    def get_feature_vectors_and_write_to_file(self, protoLabel):
         feat_vect_seq = None
-        for count, single_file_path in enumerate(self.capLib.get_paths_from_specific_lib_in_pcap_base(protocolLabel)):
+        for count, single_file_path in enumerate(self.capLib.get_paths_from_specific_lib_in_pcap_base(protoLabel)):
             self.logger.debug("Pcap File Path #: %i" % count)
-            pcap_feat = PcapFeatures(single_file_path, protocolLabel)
+            curr_pcap_file_name = single_file_path.split('/',1)[1]
+            self.logger.debug("Current PCAP File name: %s" % curr_pcap_file_name)
+            pcap_feat = PcapFeatures(single_file_path, protoLabel)
+
+            #Choose the Feaeture to be extracted
+            #if:
             feat_vect_seq = pcap_feat.getDnsReqLens()
+            #elif:
 
             self.logger.debug("Req Len seq len: %i" % len(feat_vect_seq))
-        return feat_vect_seq
 
-    def write_feature_vector_instance_to_file(self, feature_vect_list, protocolLabel):
+            self.write_feature_vector_instance_to_file(feat_vect_seq, protoLabel, curr_pcap_file_name)
+        # return feat_vect_seq
+
+    def write_feature_vector_instance_to_file(self, feature_vect_list, protocolLabel, pcapFilename):
         # Check if directory exists (i.e. feature_base, and sub directory of HTTPovDNS / FTPovDNS)
         self.make_sure_path_exists("feature_base/" + protocolLabel)
 
         # Check if file exists
+        curr_feature_filename = "feature_base/IP_Packet_Lengths.csv"
+        try:
+            with open(curr_feature_filename, mode='w') as csv_feature_file:
+                for count, vect_inst in enumerate(feature_vect_list):
+                    self.logger.debug("Populating feature vector from PCAP [%i]:[%s]" % (count, pcapFilename))
+                    vect_csv_writer = csv.writer(csv_feature_file, delimiter=',')
+                    feature_vect_row = [pcapFilename] + feature_vect_list
+                    # writerow takes a list i.e. []
+                    vect_csv_writer.writerow(feature_vect_row)
+
+        except IOError:
+            self.logger.debug("File IOError ... with: %s" % curr_feature_filename)
+
 
         # Write to file
 
@@ -70,4 +93,5 @@ class TunnelFeatureExtractor(object):
 featureExt = TunnelFeatureExtractor()
 #featureExt.test_feature_extraction()
 
-featureExt.write_feature_vector_instance_to_file(featureExt.get_feature_vectors("HTTPovDNS"), "HTTPovDNS")
+#featureExt.write_feature_vector_instance_to_file(featureExt.get_feature_vectors("HTTPovDNS"), "HTTPovDNS")
+featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS")
