@@ -54,9 +54,15 @@ class TunnelFeatureExtractor(object):
         # Check if directory exists (i.e. feature_base, and sub directory of HTTPovDNS / FTPovDNS)
         self.make_sure_path_exists("feature_base/" + protoLabel)
 
+        curr_feature_filename = ""
         # Check if file exists
-        curr_feature_filename = "DNS_Layer_Req_Lengths.csv"
+        if featureName == "DNS-Req-Lens":
+            curr_feature_filename = "DNS_Layer_Req_Lengths.csv"
+        elif featureName == "IP-Req-Lens":
+            curr_feature_filename = "IP_Layer_Req_Lengths.csv"
+
         curr_feature_filePath = "feature_base/" + protoLabel + "/" + curr_feature_filename
+
         try:
             with open(curr_feature_filePath, mode='w') as csv_feature_file:
                 feature_vect_list = None
@@ -75,11 +81,12 @@ class TunnelFeatureExtractor(object):
                     self.logger.debug("Req Len seq len: %i" % len(feature_vect_list))
 
                     self.logger.debug("Populating feature vector from PCAP [%s]" % (curr_pcap_file_name))
-
-
-                    vect_csv_writer = csv.writer(csv_feature_file, delimiter=',')
+                    #Add PCAP file name as primary key (at the head of the list)
                     # feature_vect_row = [pcapFilename] + feature_vect_list      #<==== Also works but stackoverflow says code below is faster
                     feature_vect_list.insert(0, curr_pcap_file_name)
+
+                    vect_csv_writer = csv.writer(csv_feature_file, delimiter=',')
+
                     # writerow takes a list i.e. []
                     # vect_csv_writer.writerow(feature_vect_row)
                     vect_csv_writer.writerow(feature_vect_list)
