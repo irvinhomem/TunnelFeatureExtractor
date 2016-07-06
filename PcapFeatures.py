@@ -97,6 +97,25 @@ class PcapFeatures(object):
                                 for pkt in self.pktReader if UDP in pkt and pkt[UDP].dport == 53]
         return self.specificPktLens
 
+    def getDnsReqQnames(self):
+        ### self.dnsQnames = [pkt[DNSQR].qname
+        ###                   for pkt in self.pktReader if pkt.haslayer(DNS) and pkt[UDP].dport == 53]
+        # From the documentation /reverse engineering Iodine (IP-Over-DNS) by Stalkr it is seen that:
+        #  - Client (upstream) REQUESTS are encoded, compressed and placed into the 'DNS Query Name', while
+        #  - Server (downstream) RESPONSES are only optionally compressed and placed into the 'DNS Resource Record'.
+        self.dnsReqQnames = []
+        topdomain = b'.barns.crabdance.com.'
+        for pkt in self.pktReader:
+            # if UDP in pkt and DNSQR in pkt and len([DNSQR].qname) > 0 and pkt[UDP].dport==53:
+            if pkt.haslayer(DNS) and pkt[UDP].dport==53:
+                # scapy_qry_req = pkt[IP][UDP][DNS][DNSQR].qname
+                scapy_qry_req = pkt[DNSQR].qname
+                scapy_cleaned_qry_req = scapy_qry_req[5:-len(topdomain)].replace(b'.', b'')
+                #scapy_cleaned_decompressed_qry_req = zl.decompress(scapy_cleaned_qry_req)
+                self.dnsReqQnames.append(scapy_cleaned_qry_req)
+
+        return self.dnsReqQnames
+
     def getDnsReqDataEntropy_upstream(self):
         # From the documentation /reverse engineering Iodine (IP-Over-DNS) by Stalkr it is seen that:
         #  - Client (upstream) REQUESTS are encoded, compressed and placed into the 'DNS Query Name', while

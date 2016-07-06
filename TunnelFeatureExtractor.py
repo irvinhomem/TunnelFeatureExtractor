@@ -60,6 +60,8 @@ class TunnelFeatureExtractor(object):
             curr_feature_filename = "DNS_Layer_Req_Lengths.csv"
         elif featureName == "IP-Req-Lens":
             curr_feature_filename = "IP_Layer_Req_Lengths.csv"
+        elif featureName == "DNS-Req-Qnames":
+            curr_feature_filename = "DNS_Layer_Req_Query_names.csv"
 
         curr_feature_filePath = "feature_base/" + protoLabel + "/" + curr_feature_filename
 
@@ -77,6 +79,8 @@ class TunnelFeatureExtractor(object):
                         feature_vect_list = pcap_feat.getDnsReqLens()
                     elif featureName == "IP-Req-Lens":
                         feature_vect_list = pcap_feat.get_ip_pkt_lengths()
+                    elif featureName == "DNS-Req-Qnames":
+                        feature_vect_list = pcap_feat.getDnsReqQnames()
 
                     self.logger.debug("Req Len seq len: %i" % len(feature_vect_list))
 
@@ -133,4 +137,7 @@ featureExt = TunnelFeatureExtractor()
 #featureExt.test_feature_extraction()
 
 #featureExt.write_feature_vector_instance_to_file(featureExt.get_feature_vectors("HTTPovDNS"), "HTTPovDNS")
-featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Lens")
+
+#featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Lens")
+#featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "IP-Req-Lens")
+featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Qnames")
