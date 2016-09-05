@@ -7,7 +7,7 @@ import logging
 import errno
 import csv
 
-class TunnelFeatureExtractor(object):
+class TunnelFeatureExtractorCSV(object):
 
     def __init__(self):
         logging.basicConfig(level=logging.INFO)
@@ -63,7 +63,7 @@ class TunnelFeatureExtractor(object):
         elif featureName == "DNS-Req-Qnames":
             curr_feature_filename = "DNS_Layer_Req_Query_names.csv"
 
-        curr_feature_filePath = "feature_base/" + protoLabel + "/" + curr_feature_filename
+        curr_feature_filePath = "feature_base/CSV/" + protoLabel + "/" + curr_feature_filename
 
         try:
             with open(curr_feature_filePath, mode='w') as csv_feature_file:
@@ -102,7 +102,7 @@ class TunnelFeatureExtractor(object):
         # return feat_vect_seq
 
 
-featureExt = TunnelFeatureExtractor()
+featureExt = TunnelFeatureExtractorCSV()
 #featureExt.test_feature_extraction()
 
 #featureExt.write_feature_vector_instance_to_file(featureExt.get_feature_vectors("HTTPovDNS"), "HTTPovDNS")
