@@ -5,9 +5,10 @@ from CapLibrary import CapLibrary
 
 import logging
 import errno
-import csv
+# import csv
+import json
 
-class TunnelFeatureExtractorCSV(object):
+class TunnelFeatureExtractorJSON(object):
 
     def __init__(self):
         logging.basicConfig(level=logging.INFO)
@@ -52,21 +53,22 @@ class TunnelFeatureExtractorCSV(object):
 
     def get_feature_vectors_and_write_to_file(self, protoLabel, featureName):
         # Check if directory exists (i.e. feature_base, and sub directory of HTTPovDNS / FTPovDNS)
-        self.make_sure_path_exists("feature_base/" + protoLabel)
+        self.make_sure_path_exists("feature_base/JSON/" + protoLabel+ "/" + featureName)
 
-        curr_feature_filename = ""
-        # Check if file exists
-        if featureName == "DNS-Req-Lens":
-            curr_feature_filename = "DNS_Layer_Req_Lengths.csv"
-        elif featureName == "IP-Req-Lens":
-            curr_feature_filename = "IP_Layer_Req_Lengths.csv"
-        elif featureName == "DNS-Req-Qnames":
-            curr_feature_filename = "DNS_Layer_Req_Query_names.csv"
+        # curr_feature_filename = ""
+        # # Check if file exists
+        # if featureName == "DNS-Req-Lens":
+        #     curr_feature_filename = "DNS_Layer_Req_Lengths.csv"
+        # elif featureName == "IP-Req-Lens":
+        #     curr_feature_filename = "IP_Layer_Req_Lengths.csv"
+        # elif featureName == "DNS-Req-Qnames":
+        #     curr_feature_filename = "DNS_Layer_Req_Query_names.csv"
 
-        curr_feature_filePath = "feature_base/CSV/" + protoLabel + "/" + curr_feature_filename
+        # curr_feature_filePath = "feature_base/JSON/" + protoLabel + "/" + curr_feature_filename
+        curr_feature_filePath = "feature_base/JSON/" + protoLabel + "/" + featureName + '/' + featureName + '.json'
 
         try:
-            with open(curr_feature_filePath, mode='w') as csv_feature_file:
+            with open(curr_feature_filePath, mode='w') as json_feature_file:
                 feature_vect_list = None
                 for count, single_file_path in enumerate(self.capLib.get_paths_from_specific_lib_in_pcap_base(protoLabel)):
                     self.logger.debug("Pcap File Path #: %i" % count)
@@ -87,26 +89,30 @@ class TunnelFeatureExtractorCSV(object):
                     self.logger.debug("Populating feature vector from PCAP [%s]" % (curr_pcap_file_name))
                     #Add PCAP file name as primary key (at the head of the list)
                     # feature_vect_row = [pcapFilename] + feature_vect_list      #<==== Also works but stackoverflow says code below is faster
-                    feature_vect_list.insert(0, curr_pcap_file_name)
+                    #feature_vect_list.insert(0, curr_pcap_file_name)
 
-                    vect_csv_writer = csv.writer(csv_feature_file, delimiter=',')
+                    #vect_csv_writer = csv.writer(csv_feature_file, delimiter=',')
 
                     # writerow takes a list i.e. []
                     # vect_csv_writer.writerow(feature_vect_row)
-                    vect_csv_writer.writerow(feature_vect_list)
+                    #vect_csv_writer.writerow(feature_vect_list)
+                    json.dump({'filename': curr_pcap_file_name,
+                               'props' : {'hash': "", 'protocol': protoLabel, 'feature-name': featureName,
+                                'values': feature_vect_list}}, json_feature_file, indent=4)
+                    # Ideally for the values i'd need square brackets [], but since it's a list it is recongnized
 
         except IOError:
-            self.logger.debug("File IOError ... with: %s" % curr_feature_filename)
+            self.logger.debug("File IOError ... with: %s : %s" % (featureName, curr_pcap_file_name))
 
             #self.write_feature_vector_instance_to_file(feat_vect_seq, protoLabel, curr_pcap_file_name)
         # return feat_vect_seq
 
 
-featureExt = TunnelFeatureExtractorCSV()
+featureExt = TunnelFeatureExtractorJSON()
 #featureExt.test_feature_extraction()
 
 #featureExt.write_feature_vector_instance_to_file(featureExt.get_feature_vectors("HTTPovDNS"), "HTTPovDNS")
 
-#featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Lens")
+featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Lens")
 #featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "IP-Req-Lens")
-featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Qnames")
+#featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Qnames")

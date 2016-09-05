@@ -95,8 +95,15 @@ class CapLibrary(object):
     #def load_specific_from_base(self, protocolLabel):
 
     def get_paths_from_specific_lib_in_pcap_base(self, protocolLabel, filterContainsTerm=None):
-        self.logger.debug('Reading from %s base file' % protocolLabel)
-        p = pathlib.Path(self.capbase.base_loc + '/' + protocolLabel)
+        self.logger.debug('Reading from ** %s ** base file' % protocolLabel)
+        if len(protocolLabel) < 1:
+            self.logger.debug("Protocol Label not set!")
+
+        #protocol_base_path = self.capbase.base_loc + '/' + protocolLabel
+        #protocol_base_path = '/home/irvin/PycharmProjects/TunnelFeatureExtractor/capbase/HTTPovDNS'
+        #p = pathlib.Path(str(protocol_base_path))
+        p = pathlib.Path(str(self.capbase.base_loc).strip() + '/' + protocolLabel)
+        self.logger.debug('Specific PCAP Base file path:  %s ' % str(p))
         pathList = []
         skipped = 0
         try:

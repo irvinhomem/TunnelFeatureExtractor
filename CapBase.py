@@ -13,7 +13,7 @@ class CapBase(object):
         #self.logger.setLevel(logging.WARNING)
 
         self.packetBase = []
-        self.base_loc = base_location
+        self.base_loc = str(base_location).strip()
 
         #self.logger.debug("Testing logger debug message")
         #print("Logger Level: %s", str(self.logger.getEffectiveLevel()))
@@ -51,7 +51,7 @@ class CapBase(object):
         self.packetBase.append(newMetaCapLib)
 
     def set_base_location(self, base_location):
-        self.base_loc = base_location
+        self.base_loc = str(base_location).strip()
         return
 
     def get_base_loc(self):
