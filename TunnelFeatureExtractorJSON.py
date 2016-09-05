@@ -97,8 +97,10 @@ class TunnelFeatureExtractorJSON(object):
                     # vect_csv_writer.writerow(feature_vect_row)
                     #vect_csv_writer.writerow(feature_vect_list)
                     json.dump({'filename': curr_pcap_file_name,
-                               'props' : {'hash': "", 'protocol': protoLabel, 'feature-name': featureName,
-                                'values': feature_vect_list}}, json_feature_file, indent=4)
+                               'pcap-Md5-hash': '',
+                               'protocol': protoLabel,
+                               'props': {'feature-name': featureName,
+                                         'values': feature_vect_list}}, json_feature_file, indent=4, sort_keys=True)
                     # Ideally for the values i'd need square brackets [], but since it's a list it is recongnized
 
         except IOError:
