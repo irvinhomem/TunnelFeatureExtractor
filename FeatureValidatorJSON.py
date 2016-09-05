@@ -29,11 +29,12 @@ class FeatureValidatorJSON(object):
                         break
                     except ValueError:
                         # Not yet a complete JSON  object
+                        # self.logger.debug("Not yet complete object")
                         line += next(json_data_file)
                         #yield
-
-                self.logger.debug("JSON objs #: %i " % len(json_data_objs))
-                json_data_objs.append(single_json_obj)
+                else:
+                    self.logger.debug("JSON objs #: %i " % len(json_data_objs))
+                    json_data_objs.append(single_json_obj)
 
 
         # self.logger.debug('Filename 0 : %s' % json_data[0]['filename'])
