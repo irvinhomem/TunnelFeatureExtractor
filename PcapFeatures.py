@@ -110,9 +110,10 @@ class PcapFeatures(object):
             if pkt.haslayer(DNS) and pkt[UDP].dport==53:
                 # scapy_qry_req = pkt[IP][UDP][DNS][DNSQR].qname
                 scapy_qry_req = pkt[DNSQR].qname
-                scapy_cleaned_qry_req = scapy_qry_req[5:-len(topdomain)].replace(b'.', b'')
-                #scapy_cleaned_decompressed_qry_req = zl.decompress(scapy_cleaned_qry_req)
-                self.dnsReqQnames.append(scapy_cleaned_qry_req)
+                if topdomain in scapy_qry_req:
+                    scapy_cleaned_qry_req = scapy_qry_req[5:-len(topdomain)].replace(b'.', b'')
+                    #scapy_cleaned_decompressed_qry_req = zl.decompress(scapy_cleaned_qry_req)
+                    self.dnsReqQnames.append(scapy_cleaned_qry_req)
 
         return self.dnsReqQnames
 
