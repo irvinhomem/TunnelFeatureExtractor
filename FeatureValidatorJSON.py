@@ -17,6 +17,7 @@ class FeatureValidatorJSON(object):
                                 featureName + '/' + featureName + '.json')
         self.logger.debug('Feature Base path: %s' % feature_base_path)
 
+        all_json_objs = None
         with open(feature_base_path) as json_data_file:
             try:
                 all_json_objs = json.load(json_data_file)
@@ -25,6 +26,8 @@ class FeatureValidatorJSON(object):
             except json.decoder.JSONDecodeError as err:     # A sub-class of ValueError
                 self.logger.debug('Error: %s' % (str(err)))
                 self.logger.debug('Error: MSG: %s | Line #: %s | Col #: %s' % (str(err.msg), str(err.lineno), str(err.colno)))
+
+        return all_json_objs
 
 
 
