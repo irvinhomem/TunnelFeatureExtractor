@@ -70,6 +70,7 @@ class TunnelFeatureExtractorJSON(object):
         try:
             with open(curr_feature_filePath, mode='w') as json_feature_file:
                 feature_vect_list = None
+                json_obj_list = []
                 for count, single_file_path in enumerate(self.capLib.get_paths_from_specific_lib_in_pcap_base(protoLabel)):
                     self.logger.debug("Pcap File Path #: %i" % count)
                     curr_pcap_file_name = str(single_file_path).rsplit('/', 1)[1].strip()
@@ -96,12 +97,15 @@ class TunnelFeatureExtractorJSON(object):
                     # writerow takes a list i.e. []
                     # vect_csv_writer.writerow(feature_vect_row)
                     #vect_csv_writer.writerow(feature_vect_list)
-                    json.dump({'filename': curr_pcap_file_name,
+                    json_obj_str = {'filename': curr_pcap_file_name,
                                'pcap-Md5-hash': '',
                                'protocol': protoLabel,
                                'props': {'feature-name': featureName,
-                                         'values': feature_vect_list}}, json_feature_file, indent=4, sort_keys=True)
-                    # Ideally for the values i'd need square brackets [], but since it's a list it is recongnized
+                                         'values': feature_vect_list}}
+                    # Ideally for the values i'd need square brackets [], but since it's a list it is recognized
+                    json_obj_list.append(json_obj_str)
+                json.dump(json_obj_list, json_feature_file, indent=4, sort_keys=True)
+
 
         except IOError:
             self.logger.debug("File IOError ... with: %s : %s" % (featureName, curr_pcap_file_name))
