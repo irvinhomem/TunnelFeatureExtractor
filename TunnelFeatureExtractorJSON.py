@@ -103,7 +103,10 @@ class TunnelFeatureExtractorJSON(object):
                                'props': {'feature-name': featureName,
                                          'values': feature_vect_list}}
                     # Ideally for the values i'd need square brackets [], but since it's a list it is recognized
+
+                    # Add each json_obj_str from an individual pcap file into a list containing all specific features in json format
                     json_obj_list.append(json_obj_str)
+                # Encode the list into a single file containing features of each pcap (comma separated for each pcap)
                 json.dump(json_obj_list, json_feature_file, indent=4, sort_keys=True)
 
 
