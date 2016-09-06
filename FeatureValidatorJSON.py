@@ -12,39 +12,26 @@ class FeatureValidatorJSON(object):
         # self.logger.setLevel(logging.WARNING)
         self.logger.debug("Testing debug message")
 
+    def recursive_read_json(self, feat_base_path):
+        with open(feat_base_path) as json_data_file:
+            try:
+                single_json_obj = json.load(json_data_file)
+                self.logger.debug("JSON Obj filename: %s" % single_json_obj['filename'])
+            except json.decoder.JSONDecodeError as err:
+                self.logger.debug('Error: %s' % (str(err)))
+                self.logger.debug('Error: MSG: %s | Line #: %s | Col #: %s' % (str(err.msg), str(err.lineno), str(err.colno)))
+
     def validate_JSON_documents(self, protoLabel, featureName):
         feature_base_path = str(os.getcwd() + '/' + 'feature_base/JSON/' + protoLabel + '/' +
                                 featureName + '/' + featureName + '.json')
         self.logger.debug('Feature Base path: %s' % feature_base_path)
-        # json_data_objs = []
-        # with open(feature_base_path) as json_data_file:
-        #     self.logger.debug('Opened JSON file ... ')
-        #     #json_data = json.load(json_data_file)
-        #     #for count, line in enumerate(json_data_file):
-        #     for line in json_data_file:
-        #         # yield json.loads(line)
-        #         # self.logger.debug("Json line: %s " % str(line))
-        #         # if count == 20: exit()
-        #         single_json_obj = None
-        #         #while True:
-        #         try:
-        #             single_json_obj = json.loads(line)
-        #             self.logger.debug('JSON obj filename: %s' % single_json_obj['filename'])
-        #             break
-        #         except ValueError:
-        #             # Not yet a complete JSON  object
-        #             # self.logger.debug("Not yet complete object")
-        #             line += next(json_data_file)
-        #             yield
-        #         # else:
-        #         # self.logger.debug("JSON objs #: %i " % len(json_data_objs))
-        #         # json_data_objs.append(single_json_obj)
+
+        self.recursive_read_json(feature_base_path)
 
 
-        # self.logger.debug('Filename 0 : %s' % json_data[0]['filename'])
-        # self.logger.debug('Filename 0 : %s' % json_data_objs[0]['filename'])
-        # self.logger.debug('Properties 0 Feature Name: %s' % json_data_objs[0]['props']['feature-name'])
-        # self.logger.debug('Properties 1; first feature value : %s' % json_data_objs['props'][1]['values'][0])
+
+
+
 
 my_validator = FeatureValidatorJSON()
 
