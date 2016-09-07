@@ -5,6 +5,7 @@ from scapy.all import *
 from collections import Counter, namedtuple
 import math
 import zlib as zl
+import binascii as b2a
 
 class PcapFeatures(object):
 
@@ -97,7 +98,7 @@ class PcapFeatures(object):
                                 for pkt in self.pktReader if UDP in pkt and pkt[UDP].dport == 53]
         return self.specificPktLens
 
-    def getDnsReqQnames(self):
+    def getDnsReqQnames_upstream(self):
         ### self.dnsQnames = [pkt[DNSQR].qname
         ###                   for pkt in self.pktReader if pkt.haslayer(DNS) and pkt[UDP].dport == 53]
         # From the documentation /reverse engineering Iodine (IP-Over-DNS) by Stalkr it is seen that:
@@ -113,7 +114,15 @@ class PcapFeatures(object):
                 if topdomain in scapy_qry_req:
                     scapy_cleaned_qry_req = scapy_qry_req[5:-len(topdomain)].replace(b'.', b'')
                     #scapy_cleaned_decompressed_qry_req = zl.decompress(scapy_cleaned_qry_req)
-                    self.dnsReqQnames.append(scapy_cleaned_qry_req)
+                    #self.dnsReqQnames.append(scapy_cleaned_qry_req) # <<---- Puts byte arrays into list (but has issues with JSON later)
+
+                    # Convert the python3 byte array to regular strings (latin-1)   # <---- Seems to work with JSON but results in long unicode strings
+                    # scapy_cleaned_qry_req_str = scapy_cleaned_qry_req.decode('latin-1')  # decode('utf-8')
+                    # self.dnsReqQnames.append(scapy_cleaned_qry_req_str)
+
+                    #convert the python3 byte array to hex strings (every pair of digits is a byte / individual hex value)
+                    scapy_cleaned_qry_req_hexstr = b2a.hexlify(scapy_cleaned_qry_req).decode()
+                    self.dnsReqQnames.append(scapy_cleaned_qry_req_hexstr)
 
         return self.dnsReqQnames
 
@@ -157,6 +166,19 @@ class PcapFeatures(object):
 # #------------------------------------#
 # ######   HTTP Related Methods   ######
 # #------------------------------------#
+
+    def getHttpReqBytesHex(self):
+        '''
+        Get the Bytes of only the HTTP Request characters in TCP packets
+        that have a payload and have the destination port = 80
+        Change them to hex and convert the byte array into a hex string (each pair of hex values represents a byte)
+        :return:
+        '''
+        # self.pktCharSeq = [(pkt[IP][TCP][Raw].load).decode()  # <--- Will get HTTP Request strings in normal ascii text
+        self.pktCharSeq = [b2a.hexlify(bytes(pkt[IP][TCP][Raw].load)).decode()
+                                  for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 80]
+        return self.pktCharSeq
+
 #     def get_ip_pkt_http_req_entropy(self):
 #         '''
 #         :return:
@@ -170,16 +192,16 @@ class PcapFeatures(object):
 #                                 for pkt in self.pktReader if TCP in pkt and pkt[TCP].dport == 80]
 #         return self.specificPktLens
 #
-#     def getHttpReqEntropy(self):
-#         '''
-#         Get the Entropy of only the HTTP Request characters in TCP packets
-#         that have a payload and have the destination port = 80
-#         :return:
-#         '''
-#         self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP][TCP][Raw].load)))
-#                                   for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 80]
-#         return self.pktCharEntropySeq
-#
+    def getHttpReqEntropy(self):
+        '''
+        Get the Entropy of only the HTTP Request characters in TCP packets
+        that have a payload and have the destination port = 80
+        :return:
+        '''
+        self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP][TCP][Raw].load)))
+                                  for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 80]
+        return self.pktCharEntropySeq
+
 #     def getCompressedHttpReqEntropy(self):
 #         '''
 #         Get the Entropy of only the HTTP Request characters in TCP packets
