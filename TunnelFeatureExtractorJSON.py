@@ -67,6 +67,7 @@ class TunnelFeatureExtractorJSON(object):
         # curr_feature_filePath = "feature_base/JSON/" + protoLabel + "/" + curr_feature_filename
         curr_feature_filePath = "feature_base/JSON/" + protoLabel + "/" + featureName + '/' + featureName + '.json'
 
+        curr_pcap_file_name = 'Not yet set.'
         try:
             with open(curr_feature_filePath, mode='w') as json_feature_file:
                 feature_vect_list = None
@@ -82,8 +83,11 @@ class TunnelFeatureExtractorJSON(object):
                         feature_vect_list = pcap_feat.getDnsReqLens()
                     elif featureName == "IP-Req-Lens":
                         feature_vect_list = pcap_feat.get_ip_pkt_lengths()
-                    elif featureName == "DNS-Req-Qnames-Enc-Comp":
-                        feature_vect_list = pcap_feat.getDnsReqQnames()
+                    elif featureName == "DNS-Req-Qnames-Enc-Comp-Hex":
+                        feature_vect_list = pcap_feat.getDnsReqQnames_upstream()
+                    # HTTP Related Features
+                    elif featureName == "HTTP-Req-Bytes-Hex":
+                        feature_vect_list = pcap_feat.getHttpReqBytesHex()
 
                     self.logger.debug("Req Len seq len: %i" % len(feature_vect_list))
 
@@ -109,7 +113,6 @@ class TunnelFeatureExtractorJSON(object):
                 # Encode the list into a single file containing features of each pcap (comma separated for each pcap)
                 json.dump(json_obj_list, json_feature_file, indent=4, sort_keys=True)
 
-
         except IOError:
             self.logger.debug("File IOError ... with: %s : %s" % (featureName, curr_pcap_file_name))
 
@@ -122,6 +125,8 @@ featureExt = TunnelFeatureExtractorJSON()
 
 #featureExt.write_feature_vector_instance_to_file(featureExt.get_feature_vectors("HTTPovDNS"), "HTTPovDNS")
 
-featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Lens")
-#featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "IP-Req-Lens")
-#featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Qnames")
+# featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Lens")      # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "IP-Req-Lens")       # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Qnames-Enc-Comp-Hex")
+
+featureExt.get_feature_vectors_and_write_to_file("HTTP-Plain", "HTTP-Req-Bytes-Hex")
