@@ -12,26 +12,29 @@ class FeatureValidatorJSON(object):
         # self.logger.setLevel(logging.WARNING)
         self.logger.debug("Testing debug message")
 
+        self.all_json_objs = None
+
     def validate_JSON_documents(self, protoLabel, featureName):
         feature_base_path = str(os.getcwd() + '/' + 'feature_base/JSON/' + protoLabel + '/' +
                                 featureName + '/' + featureName + '.json')
         self.logger.debug('Feature Base path: %s' % feature_base_path)
 
-        all_json_objs = None
+        json_objs = None
         with open(feature_base_path) as json_data_file:
             try:
-                all_json_objs = json.load(json_data_file)
-                self.logger.debug("JSON Obj filename: %s" % all_json_objs[0]['filename'])
-                self.logger.debug("JSON Obj filename: %s" % all_json_objs[1]['filename'])
+                json_objs = json.load(json_data_file)
+                self.logger.debug("JSON Obj filename: %s" % json_objs[0]['filename'])
+                self.logger.debug("JSON Obj filename: %s" % json_objs[1]['filename'])
             except json.decoder.JSONDecodeError as err:     # A sub-class of ValueError
                 self.logger.debug('Error: %s' % (str(err)))
                 self.logger.debug('Error: MSG: %s | Line #: %s | Col #: %s' % (str(err.msg), str(err.lineno), str(err.colno)))
 
-        return all_json_objs
+        return json_objs
 
 
 
 my_validator = FeatureValidatorJSON()
 
 my_validator.validate_JSON_documents('HTTPovDNS', 'DNS-Req-Lens')
+my_validator.validate_JSON_documents('HTTPovDNS', 'IP-Req-Lens')
 
