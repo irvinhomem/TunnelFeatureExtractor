@@ -244,3 +244,7 @@ class CapLibrary(object):
             three_sigma_percent = round((three_sigma/len(yVarSet))*100, 2)
 
         return one_sigma_percent, two_sigma_percent, three_sigma_percent
+
+
+httpOvDnsCapLib = CapLibrary()
+httpOvDnsCapLib.load_only_pcap_paths_to_Lib('HTTPovDNS-Static')
