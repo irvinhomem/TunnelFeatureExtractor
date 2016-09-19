@@ -245,6 +245,8 @@ class CapLibrary(object):
 
         return one_sigma_percent, two_sigma_percent, three_sigma_percent
 
-
+# # Adding HTTPovDNS-Static PCAP paths to capbase
 httpOvDnsCapLib = CapLibrary()
 httpOvDnsCapLib.load_only_pcap_paths_to_Lib('HTTPovDNS-Static')
+# # Adding HTTPovDNS-Static PCAP paths to capbase
+# httpOvDnsCapLib.load_only_pcap_paths_to_Lib('HTTPovDNS-Dyn')
