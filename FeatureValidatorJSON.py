@@ -14,7 +14,7 @@ class FeatureValidatorJSON(object):
 
         self.all_json_objs = None
 
-    def validate_JSON_documents(self, protoLabel, featureName):
+    def validate_JSON_Aggr_documents(self, protoLabel, featureName):
         feature_base_path = str(os.getcwd() + '/' + 'feature_base/JSON/' + protoLabel + '/' +
                                 featureName + '/' + featureName + '.json')
         self.logger.debug('Feature Base path: %s' % feature_base_path)
@@ -34,6 +34,6 @@ class FeatureValidatorJSON(object):
 
 my_validator = FeatureValidatorJSON()
 
-my_validator.validate_JSON_documents('HTTPovDNS', 'DNS-Req-Lens')
-my_validator.validate_JSON_documents('HTTPovDNS', 'IP-Req-Lens')
+my_validator.validate_JSON_Aggr_documents('HTTPovDNS', 'DNS-Req-Lens')
+my_validator.validate_JSON_Aggr_documents('HTTPovDNS', 'IP-Req-Lens')
 
