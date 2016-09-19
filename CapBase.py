@@ -31,7 +31,7 @@ class CapBase(object):
                 else:
                     with p.open('r') as rf:
                         for line in rf:
-                            self.base_loc = line
+                            self.base_loc = line.strip()
                             if self.base_loc == '':
                                 self.base_loc == filedialog.askdirectory(initialdir='', title='Select Base Location home-dir')
                             else:
