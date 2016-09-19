@@ -32,7 +32,6 @@ class FeatureValidatorJSON(object):
         return json_objs
 
 
-
 my_validator = FeatureValidatorJSON()
 
 my_validator.validate_JSON_documents('HTTPovDNS', 'DNS-Req-Lens')
