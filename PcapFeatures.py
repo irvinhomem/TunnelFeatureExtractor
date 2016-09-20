@@ -28,7 +28,9 @@ class PcapFeatures(object):
         self.pcapFileName = ''
         try:
             if len(file_path) > 0:
-                self.pktReader = PcapReader(self.pcapFilePath)
+                # self.pktReader = PcapReader(self.pcapFilePath)
+                # Note the difference between the ABOVE and with '.read_all' BELOW
+                self.pktReader = PcapReader(self.pcapFilePath).read_all()
                 self.pcapFileName = str(self.pcapFilePath).rsplit('/',1)[1]
                 self.logger.debug("Pcap File Name: %s" % self.pcapFileName)
         except:
@@ -51,8 +53,11 @@ class PcapFeatures(object):
 
     def test_pkt_Reader(self):
         self.logger.debug("Type : %s" % str(type(self.pktReader)))
+        #pktlen_seq = [len(pkt[IP]) for pkt in self.pktReader if UDP in pkt]
         pktlen_seq = [len(pkt[IP]) for pkt in self.pktReader if UDP in pkt]
         self.logger.debug("Length of Seq: %i" % len(pktlen_seq))
+
+        return pktlen_seq
 
     def add_proto_label(self, newProtoLabel):
         self.protocolLabel = newProtoLabel
@@ -159,7 +164,11 @@ class PcapFeatures(object):
         return self.pktCharEntropySeq
 
     def get_ip_pkt_lengths(self):
+        #self.logger.debug("Packet Reader Filename: %s" % str(self.pktReader.filename))
+        # for p in self.pktReader:
+        #     self.logger.debug("lengths: %i" % len(p))
         self.pktIPLenSeq = [len(pkt[IP])for pkt in self.pktReader if IP in pkt]
+        #self.logger.debug()
 
         return self.pktIPLenSeq
 
