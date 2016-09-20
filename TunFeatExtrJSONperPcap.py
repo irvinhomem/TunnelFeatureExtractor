@@ -130,7 +130,11 @@ featureExt = TunnelFeatureExtractorJSON()
 
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Lens")      # <---- Works
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "IP-Req-Lens")       # <---- Works
-featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Qnames-Enc-Comp-Hex")        # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Qnames-Enc-Comp-Hex")        # <---- Works
 
 #featureExt.get_feature_vectors_and_write_to_file("HTTP-Plain", "HTTP-Req-Bytes-Hex")
 #featureExt.get_feature_vectors_and_write_to_file("HTTP-ovDNS-v-Plain-SIZE", "DNS-Req-Qnames-Enc-Comp-Hex")     # <---- Works
+
+# featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS-Static", "DNS-Req-Lens")      # <---- Works
+featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS-Static", "IP-Req-Lens")       # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS-Static", "DNS-Req-Qnames-Enc-Comp-Hex")        # <---- Works
