@@ -31,6 +31,7 @@ class PcapFeatures(object):
                 # self.pktReader = PcapReader(self.pcapFilePath)
                 # Note the difference between the ABOVE and with '.read_all' BELOW
                 self.pktReader = PcapReader(self.pcapFilePath).read_all()
+                # CHECK THE LINE ABOVE IF MEMORY ISSUES ARISE FOR LARGE PCAP FILES
                 self.pcapFileName = str(self.pcapFilePath).rsplit('/',1)[1]
                 self.logger.debug("Pcap File Name: %s" % self.pcapFileName)
         except:
