@@ -80,26 +80,35 @@ class TunnelFeatureExtractorJSON(object):
                 pcap_feat = PcapFeatures(single_file_path, protoLabel)
 
                 feature_dict_list = []
+                #feature_dict = {}
                 #Choose the Feature to be extracted
                 # Get all features into one file
                 # if featureName == "All":
                 #     DNS_Req_Len_vect_list = pcap_feat.getDnsReqLens()
                 #     IP_Req_Len_vect_list = pcap_feat.get_ip_pkt_lengths()
+
                 # # Get only Specific Feature
-                if featureName == "DNS-Req-Lens" or "All":
+                if featureName == "DNS-Req-Lens" or featureName == "All":
                     feature_vect_list = pcap_feat.getDnsReqLens()
-                    feature_dict_list.append({'feature_name' : featureName, 'values':feature_vect_list})
-                elif featureName == "IP-Req-Lens" or "All":
+                    self.logger.debug("DNS-Req-Lens #: %i" % len(feature_vect_list))
+                    feature_dict_list.append({'feature_name_1': "DNS-Req-Lens", 'values_1': feature_vect_list})
+                if featureName == "IP-Req-Lens" or featureName == "All":
+                    #feature_vect_list = pcap_feat.test_pkt_Reader()
                     feature_vect_list = pcap_feat.get_ip_pkt_lengths()
-                    feature_dict_list.append({'feature_name': featureName, 'values': feature_vect_list})
-                elif featureName == "DNS-Req-Qnames-Enc-Comp-Hex" or "All":
+                    self.logger.debug("IP-Req-Lens #: %i" % len(feature_vect_list))
+                    feature_dict_list.append({'feature_name_2': "IP-Req-Lens", 'values_2': feature_vect_list})
+                if featureName == "DNS-Req-Qnames-Enc-Comp-Hex" or featureName == "All":
                     feature_vect_list = pcap_feat.getDnsReqQnames_upstream()
-                    feature_dict_list.append({'feature_name': featureName, 'values': feature_vect_list})
+                    self.logger.debug("DNS-Req-Qnames-Enc-Comp-Hex #: %i" % len(feature_vect_list))
+                    feature_dict_list.append({'feature_name_3': "DNS-Req-Qnames-Enc-Comp-Hex", 'values_3': feature_vect_list})
                 # HTTP Related Features
-                elif featureName == "HTTP-Req-Bytes-Hex":
+                if featureName == "HTTP-Req-Bytes-Hex" or featureName == "All":
                     feature_vect_list = pcap_feat.getHttpReqBytesHex()
 
                 self.logger.debug("Req Len seq len: %i" % len(feature_vect_list))
+                self.logger.debug("Number of features being captured: %i" % len(feature_dict_list))
+                self.logger.debug("First Feature: %s" % feature_dict_list[0]['feature_name_1'])
+                #self.logger.debug("2nd Feature: %s" % feature_dict_list[1]['feature_name_2'])
 
                 self.logger.debug("Populating feature vector from PCAP [%s]" % (curr_pcap_file_name))
                 #Add PCAP file name as primary key (at the head of the list)
