@@ -72,6 +72,7 @@ class TunnelFeatureExtractorJSON(object):
             feature_vect_list = None
             json_obj_list = []
             for count, single_file_path in enumerate(self.capLib.get_paths_from_specific_lib_in_pcap_base(protoLabel)):
+                self.logger.debug('-----------------------------')
                 self.logger.debug("Pcap File Path #: %i" % count)
                 curr_pcap_file_name = str(single_file_path).rsplit('/', 1)[1].strip()
                 self.logger.debug("Current PCAP File name: %s" % curr_pcap_file_name)
@@ -102,7 +103,7 @@ class TunnelFeatureExtractorJSON(object):
                     self.logger.debug("DNS-Req-Qnames-Enc-Comp-Hex #: %i" % len(feature_vect_list))
                     feature_dict_list.append({'feature_name_3': "DNS-Req-Qnames-Enc-Comp-Hex", 'values_3': feature_vect_list})
                 # HTTP Related Features
-                if featureName == "HTTP-Req-Bytes-Hex" or featureName == "All":
+                if featureName == "HTTP-Req-Bytes-Hex" or featureName == "All-HTTP":
                     feature_vect_list = pcap_feat.getHttpReqBytesHex()
 
                 self.logger.debug("Req Len seq len: %i" % len(feature_vect_list))
@@ -158,7 +159,7 @@ featureExt = TunnelFeatureExtractorJSON()
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Lens")      # <---- Works
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "IP-Req-Lens")       # <---- Works
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Qnames-Enc-Comp-Hex")        # <---- Works
-featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "All")      # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "All")      # <---- Works
 
 #featureExt.get_feature_vectors_and_write_to_file("HTTP-Plain", "HTTP-Req-Bytes-Hex")
 #featureExt.get_feature_vectors_and_write_to_file("HTTP-ovDNS-v-Plain-SIZE", "DNS-Req-Qnames-Enc-Comp-Hex")     # <---- Works
@@ -166,3 +167,4 @@ featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "All")      # <---
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS-Static", "DNS-Req-Lens")      # <---- Works
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS-Static", "IP-Req-Lens")       # <---- Works
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS-Static", "DNS-Req-Qnames-Enc-Comp-Hex")        # <---- Works
+featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS-Static", "All")      # <---- Works
