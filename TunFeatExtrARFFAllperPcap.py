@@ -133,34 +133,51 @@ class TunnelFeatureExtractorJSON(object):
                                     # 'props': features_json_str}
                                     # 'props': feature_dict_list} #features_json_str
 
-                    arff_obj_str = {'filename': curr_pcap_file_name,
-                                    'pcap-Md5-hash': '',
-                                    'protocol': protoLabel,
-                                    'props': feature_dict_list}
+                    arff_obj_str = {
+                        'description': curr_pcap_file_name + '-' + protoLabel,
+                        'relation': featureName + '-' + 'pcap-Md5-hash',
+                        'attributes': [
+                            ('filename', ''),
+                            ('', ''),
+                            ('protocol', ''),
+                            ('feature-name', '')
+                        ],
+                        'data':[
+                            [curr_pcap_file_name, '', protoLabel]
+                        ]
+                    }
+
+                        # {'filename': curr_pcap_file_name,
+                        #             'pcap-Md5-hash': '',
+                        #             'protocol': protoLabel,
+                        #             'props': feature_dict_list}
                                     # 'props': features_json_str}
                                     # 'props': feature_dict_list} #features_json_str
                 else:
                     json_obj_str = {'filename': curr_pcap_file_name,
-                               'pcap-Md5-hash': '',
-                               'protocol': protoLabel,
-                               'props': {'feature-name': featureName,
-                                         'values': feature_vect_list}}
-                    # Ideally for the values i'd need square brackets [], but since it's a list it is recognized
-
-                    arff_obj_str = {
-                        'description': '',
-                        'relation': 'pcap_features',
-                        'attributes': [
-                            ('filename', ''),
-                            ('pcap-Md5-hash', ''),
-                            ('protocol', ''),
-                            ('props', [])
-                        ],
-                        'filename': curr_pcap_file_name,
                                     'pcap-Md5-hash': '',
                                     'protocol': protoLabel,
                                     'props': {'feature-name': featureName,
-                                              'values': feature_vect_list}}
+                                              'values': feature_vect_list}
+                                    }
+                    # Ideally for the values i'd need square brackets [], but since it's a list it is recognized
+
+                    arff_obj_str = {
+                        'description': curr_pcap_file_name + '-' + protoLabel,
+                        'relation': featureName + '-' + 'pcap-Md5-hash',
+                        'attributes': [
+                            (featureName, 'INTEGER')
+                        ],
+                        'data':[
+                            [feature_vect_list]
+                        ]
+                    }
+
+                        # {'filename': curr_pcap_file_name,
+                        #             'pcap-Md5-hash': '',
+                        #             'protocol': protoLabel,
+                        #             'props': {'feature-name': featureName,
+                        #                       'values': feature_vect_list}}
 
                 # with open(curr_feature_filePath, mode='w') as json_feature_file:          # <--- Works for JSON
                 #     json.dump(json_obj_str, json_feature_file, indent=4, sort_keys=True)  # <--- Works for JSON
@@ -186,10 +203,10 @@ featureExt = TunnelFeatureExtractorJSON()
 #featureExt.write_feature_vector_instance_to_file(featureExt.get_feature_vectors("HTTPovDNS"), "HTTPovDNS")
 
 # # TESTING Capbase
-# featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Lens")      # <---- Works
+featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Lens")      # <---- Works
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "IP-Req-Lens")       # <---- Works
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Qnames-Enc-Comp-Hex")        # <---- Works
-featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "All")      # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "All")      # <---- Works
 
 #featureExt.get_feature_vectors_and_write_to_file("HTTP-Plain", "HTTP-Req-Bytes-Hex")
 #featureExt.get_feature_vectors_and_write_to_file("HTTP-ovDNS-v-Plain-SIZE", "DNS-Req-Qnames-Enc-Comp-Hex")     # <---- Works
