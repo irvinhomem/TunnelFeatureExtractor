@@ -134,8 +134,8 @@ class TunnelFeatureExtractorJSON(object):
                                     # 'props': feature_dict_list} #features_json_str
 
                     arff_obj_str = {
-                        'description': curr_pcap_file_name + '-' + protoLabel,
-                        'relation': featureName + '-' + 'pcap-Md5-hash',
+                        'description': curr_pcap_file_name + '---' + protoLabel,
+                        'relation': featureName + '---' + 'pcap-Md5-hash',
                         'attributes': [
                             ('filename', ''),
                             ('', ''),
@@ -163,13 +163,13 @@ class TunnelFeatureExtractorJSON(object):
                     # Ideally for the values i'd need square brackets [], but since it's a list it is recognized
 
                     arff_obj_str = {
-                        'description': curr_pcap_file_name + '-' + protoLabel,
-                        'relation': featureName + '-' + 'pcap-Md5-hash',
+                        'description': curr_pcap_file_name + '---' + protoLabel,
+                        'relation': featureName + '---' + 'pcap-Md5-hash',
                         'attributes': [
-                            (featureName, 'INTEGER')
+                            (featureName, 'STRING')     # STRING, INTEGER, NUMERIC
                         ],
                         'data':[
-                            [feature_vect_list]
+                            [",\n".join(map(str, feature_vect_list))]    # [feature_vect_list]
                         ]
                     }
 
