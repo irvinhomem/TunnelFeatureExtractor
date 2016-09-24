@@ -95,23 +95,23 @@ class TunnelFeatureExtractorJSON(object):
                 if featureName == "DNS-Req-Lens" or featureName == "All":
                     feature_vect_list = pcap_feat.getDnsReqLens()
                     self.logger.debug("DNS-Req-Lens #: %i" % len(feature_vect_list))
-                    feature_dict_list.append({'feature_name_1': "DNS-Req-Lens", 'values_1': feature_vect_list})
+                    feature_dict_list.append({'feature_name': "DNS-Req-Lens", 'values': feature_vect_list})
                 if featureName == "IP-Req-Lens" or featureName == "All":
                     #feature_vect_list = pcap_feat.test_pkt_Reader()
                     feature_vect_list = pcap_feat.get_ip_pkt_lengths()
                     self.logger.debug("IP-Req-Lens #: %i" % len(feature_vect_list))
-                    feature_dict_list.append({'feature_name_2': "IP-Req-Lens", 'values_2': feature_vect_list})
+                    feature_dict_list.append({'feature_name': "IP-Req-Lens", 'values': feature_vect_list})
                 if featureName == "DNS-Req-Qnames-Enc-Comp-Hex" or featureName == "All":
                     feature_vect_list = pcap_feat.getDnsReqQnames_upstream()
                     self.logger.debug("DNS-Req-Qnames-Enc-Comp-Hex #: %i" % len(feature_vect_list))
-                    feature_dict_list.append({'feature_name_3': "DNS-Req-Qnames-Enc-Comp-Hex", 'values_3': feature_vect_list})
+                    feature_dict_list.append({'feature_name': "DNS-Req-Qnames-Enc-Comp-Hex", 'values': feature_vect_list})
                 # HTTP Related Features
                 if featureName == "HTTP-Req-Bytes-Hex" or featureName == "All-HTTP":
                     feature_vect_list = pcap_feat.getHttpReqBytesHex()
 
                 self.logger.debug("Req Len seq len: %i" % len(feature_vect_list))
                 self.logger.debug("Number of features being captured: %i" % len(feature_dict_list))
-                self.logger.debug("First Feature: %s" % feature_dict_list[0]['feature_name_1'])
+                self.logger.debug("First Feature: %s" % feature_dict_list[0]['feature_name'])
                 #self.logger.debug("2nd Feature: %s" % feature_dict_list[1]['feature_name_2'])
 
                 self.logger.debug("Populating feature vector from PCAP [%s]" % (curr_pcap_file_name))
@@ -133,20 +133,43 @@ class TunnelFeatureExtractorJSON(object):
                                     # 'props': features_json_str}
                                     # 'props': feature_dict_list} #features_json_str
 
+                    # Convert dictionary items to tuples with DataType strings
+                    attrib_tuple = ()
+                    attrib_list = []
+                    attrib_type = ''
+                    data_list_of_lists = []
+                    for item in feature_dict_list:
+                        if item["feature_name"] in ['DNS-Req-Lens', 'IP-Req-Lens']:
+                            attrib_type = "INTEGER"
+                        elif item["feature_name"] == 'DNS-Req-Qnames-Enc-Comp-Hex':
+                            attrib_type = "STRING"
+                        attrib_list.append((item["feature_name"], attrib_type))
+                        data_list_of_lists.append(item["values"])
+
                     arff_obj_str = {
                         'description': curr_pcap_file_name + '---' + protoLabel,
                         'relation': featureName + '---' + 'pcap-Md5-hash',
-                        'attributes': [
-                            ('filename', ''),
-                            ('', ''),
-                            ('protocol', ''),
-                            ('feature-name', '')
-                        ],
+                        'attributes': attrib_list,
                         'data':[
-                            [curr_pcap_file_name, '', protoLabel]
+                            [data_list_of_lists]
+                            # [",\n".join(map(str, feature_vect_list))]
+                            # [",\n".join(map(str, feature_vect_list))]
                         ]
                     }
 
+                    # arff_obj_str = {
+                    #     'description': curr_pcap_file_name + '---' + protoLabel,
+                    #     'relation': featureName + '---' + 'pcap-Md5-hash',
+                    #     'attributes': [
+                    #         ('filename', 'INTEGER'),
+                    #         ('', 'INTEGER'),
+                    #         ('protocol', 'STRING'),
+                    #         ('feature-name', '')
+                    #     ],
+                    #     'data': [
+                    #         [curr_pcap_file_name, '', protoLabel]
+                    #     ]
+                    # }
                         # {'filename': curr_pcap_file_name,
                         #             'pcap-Md5-hash': '',
                         #             'protocol': protoLabel,
@@ -166,7 +189,7 @@ class TunnelFeatureExtractorJSON(object):
                         'description': curr_pcap_file_name + '---' + protoLabel,
                         'relation': featureName + '---' + 'pcap-Md5-hash',
                         'attributes': [
-                            (featureName, 'INTEGER')     # STRING, INTEGER, NUMERIC
+                            (protoLabel+'---'+featureName, 'INTEGER')     # STRING, INTEGER, NUMERIC
                         ],
                         'data':[
                             [",\n".join(map(str, feature_vect_list))]    # [feature_vect_list]
@@ -203,10 +226,10 @@ featureExt = TunnelFeatureExtractorJSON()
 #featureExt.write_feature_vector_instance_to_file(featureExt.get_feature_vectors("HTTPovDNS"), "HTTPovDNS")
 
 # # TESTING Capbase
-featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Lens")      # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Lens")      # <---- Works
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "IP-Req-Lens")       # <---- Works
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "DNS-Req-Qnames-Enc-Comp-Hex")        # <---- Works
-# featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "All")      # <---- Works
+featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS", "All")      # <---- Works
 
 #featureExt.get_feature_vectors_and_write_to_file("HTTP-Plain", "HTTP-Req-Bytes-Hex")
 #featureExt.get_feature_vectors_and_write_to_file("HTTP-ovDNS-v-Plain-SIZE", "DNS-Req-Qnames-Enc-Comp-Hex")     # <---- Works
