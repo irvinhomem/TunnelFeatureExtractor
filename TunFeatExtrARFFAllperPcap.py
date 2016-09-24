@@ -166,7 +166,7 @@ class TunnelFeatureExtractorJSON(object):
                         'description': curr_pcap_file_name + '---' + protoLabel,
                         'relation': featureName + '---' + 'pcap-Md5-hash',
                         'attributes': [
-                            (featureName, 'STRING')     # STRING, INTEGER, NUMERIC
+                            (featureName, 'INTEGER')     # STRING, INTEGER, NUMERIC
                         ],
                         'data':[
                             [",\n".join(map(str, feature_vect_list))]    # [feature_vect_list]
