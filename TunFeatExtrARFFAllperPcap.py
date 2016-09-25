@@ -140,9 +140,9 @@ class TunnelFeatureExtractorJSON(object):
                     data_list_of_lists = []
                     for item in feature_dict_list:
                         if item["feature_name"] in ['DNS-Req-Lens', 'IP-Req-Lens']:
-                            attrib_type = "INTEGER"
+                            attrib_type = "STRING"      # INTEGER
                         elif item["feature_name"] == 'DNS-Req-Qnames-Enc-Comp-Hex':
-                            attrib_type = "STRING"
+                            attrib_type = "STRING"      # NUMERIC  # STRING
                         attrib_list.append((item["feature_name"], attrib_type))
                         data_list_of_lists.append(item["values"])
 
@@ -151,7 +151,10 @@ class TunnelFeatureExtractorJSON(object):
                         'relation': featureName + '---' + 'pcap-Md5-hash',
                         'attributes': attrib_list,
                         'data':[
-                            [data_list_of_lists]
+                            # [":\n".join(map(str, item)) + ',\n' for item in data_list_of_lists]
+                            # ['['+",\n".join(map(str, item))+']' for item in data_list_of_lists]
+                            # [",\n".join(map(str, data_list_of_lists))]
+                            data_list_of_lists      # <--- VALID .ARFF BUT NOT READABLE IN GEDIT, but works in Notepad++
                             # [",\n".join(map(str, feature_vect_list))]
                             # [",\n".join(map(str, feature_vect_list))]
                         ]
