@@ -168,4 +168,12 @@ featureExt = TunnelFeatureExtractorJSON()
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS-Static", "DNS-Req-Lens")      # <---- Works
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS-Static", "IP-Req-Lens")       # <---- Works
 # featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS-Static", "DNS-Req-Qnames-Enc-Comp-Hex")        # <---- Works
-featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS-Static", "All")      # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("HTTPovDNS-Static", "All")      # <---- Works
+
+# featureExt.get_feature_vectors_and_write_to_file("FTPovDNS-UL", "All")      # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("FTPovDNS-DL", "All")      # <---- Works
+
+# featureExt.get_feature_vectors_and_write_to_file("HTTP-S-ovDNS-Static", "All")      # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("HTTP-S-ovDNS-Dyn", "All")      # <---- Works
+
+featureExt.get_feature_vectors_and_write_to_file("POP3ovDNS-DL", "All")      # <---- Works
