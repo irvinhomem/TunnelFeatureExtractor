@@ -92,23 +92,24 @@ class TunnelFeatureExtractorJSON(object):
                 if featureName == "DNS-Req-Lens" or featureName == "All":
                     feature_vect_list = pcap_feat.getDnsReqLens()
                     self.logger.debug("DNS-Req-Lens #: %i" % len(feature_vect_list))
-                    feature_dict_list.append({'feature_name_1': "DNS-Req-Lens", 'values_1': feature_vect_list})
+                    feature_dict_list.append({'feature_name': "DNS-Req-Lens", 'values': feature_vect_list})
                 if featureName == "IP-Req-Lens" or featureName == "All":
                     #feature_vect_list = pcap_feat.test_pkt_Reader()
                     feature_vect_list = pcap_feat.get_ip_pkt_lengths()
                     self.logger.debug("IP-Req-Lens #: %i" % len(feature_vect_list))
-                    feature_dict_list.append({'feature_name_2': "IP-Req-Lens", 'values_2': feature_vect_list})
+                    feature_dict_list.append({'feature_name': "IP-Req-Lens", 'values': feature_vect_list})
                 if featureName == "DNS-Req-Qnames-Enc-Comp-Hex" or featureName == "All":
                     feature_vect_list = pcap_feat.getDnsReqQnames_upstream()
                     self.logger.debug("DNS-Req-Qnames-Enc-Comp-Hex #: %i" % len(feature_vect_list))
-                    feature_dict_list.append({'feature_name_3': "DNS-Req-Qnames-Enc-Comp-Hex", 'values_3': feature_vect_list})
+                    feature_dict_list.append({'feature_name': "DNS-Req-Qnames-Enc-Comp-Hex", 'values': feature_vect_list})
                 # HTTP Related Features
                 if featureName == "HTTP-Req-Bytes-Hex" or featureName == "All-HTTP":
                     feature_vect_list = pcap_feat.getHttpReqBytesHex()
 
                 self.logger.debug("Req Len seq len: %i" % len(feature_vect_list))
                 self.logger.debug("Number of features being captured: %i" % len(feature_dict_list))
-                self.logger.debug("First Feature: %s" % feature_dict_list[0]['feature_name_1'])
+                self.logger.debug("First Feature: %s" % feature_dict_list[0]['feature_name'])
+                # self.logger.debug("First Feature: %s" % feature_dict_list[0]['feature_name_1'])
                 #self.logger.debug("2nd Feature: %s" % feature_dict_list[1]['feature_name_2'])
 
                 self.logger.debug("Populating feature vector from PCAP [%s]" % (curr_pcap_file_name))
