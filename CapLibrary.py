@@ -246,7 +246,24 @@ class CapLibrary(object):
         return one_sigma_percent, two_sigma_percent, three_sigma_percent
 
 # # Adding HTTPovDNS-Static PCAP paths to capbase
-httpOvDnsCapLib = CapLibrary()
-httpOvDnsCapLib.load_only_pcap_paths_to_Lib('HTTPovDNS-Static')
-# # Adding HTTPovDNS-Static PCAP paths to capbase
+# httpOvDnsCapLib = CapLibrary()
+# httpOvDnsCapLib.load_only_pcap_paths_to_Lib('HTTPovDNS-Static')
+# # Adding HTTPovDNS-Dynamic PCAP paths to capbase
 # httpOvDnsCapLib.load_only_pcap_paths_to_Lib('HTTPovDNS-Dyn')
+
+# # Adding FTPovDNS-Static PCAP paths to capbase
+# ftpOvDnsCapLib = CapLibrary()
+# ftpOvDnsCapLib.load_only_pcap_paths_to_Lib('FTPovDNS-UL')
+
+# ftpOvDnsCapLib.load_only_pcap_paths_to_Lib('FTPovDNS-DL')
+
+# # Adding HTTP-S-ovDNS-Static PCAP paths to capbase
+# httpsOvDnsCapLib = CapLibrary()
+# httpsOvDnsCapLib.load_only_pcap_paths_to_Lib('HTTP-S-ovDNS-Static')
+# # Adding HTTPovDNS-Dynamic PCAP paths to capbase
+# httpsOvDnsCapLib.load_only_pcap_paths_to_Lib('HTTP-S-ovDNS-Dyn')
+
+# # Adding POP3ovDNS-Static PCAP paths to capbase
+pop3OvDnsCapLib = CapLibrary()
+pop3OvDnsCapLib.load_only_pcap_paths_to_Lib('POP3ovDNS-DL')
+
