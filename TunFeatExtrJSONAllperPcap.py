@@ -102,15 +102,38 @@ class TunnelFeatureExtractorJSON(object):
                     feature_vect_list = pcap_feat.getDnsReqQnames_upstream()
                     self.logger.debug("DNS-Req-Qnames-Enc-Comp-Hex #: %i" % len(feature_vect_list))
                     feature_dict_list.append({'feature_name': "DNS-Req-Qnames-Enc-Comp-Hex", 'values': feature_vect_list})
+                if featureName == "DNS-Req-Qnames-Enc-Comp-Entropy" or featureName == "All":
+                    feature_vect_list = pcap_feat.getDnsReqQnameEntropy_upstream()
+                    self.logger.debug("DNS-Req-Qnames-Enc-Comp-Entropy #: %i" % len(feature_vect_list))
+                    feature_dict_list.append({'feature_name': "DNS-Req-Qnames-Enc-Comp-Entropy", 'values': feature_vect_list})
                 # HTTP Related Features
                 if featureName == "HTTP-Req-Bytes-Hex" or featureName == "All-HTTP":
                     feature_vect_list = pcap_feat.getHttpReqBytesHex()
+                    self.logger.debug("HTTP-Req-Bytes-Hex #: %i" % len(feature_vect_list))
+                    feature_dict_list.append({'feature_name': "HTTP-Req-Bytes-Hex", 'values': feature_vect_list})
+                # FTP Related Features
+                if featureName == "FTP-Req-Bytes-Hex" or featureName == "All-FTP":
+                    feature_vect_list = pcap_feat.getFtpReqBytesHex()
+                    self.logger.debug("FTP-Req-Bytes-Hex #: %i" % len(feature_vect_list))
+                    feature_dict_list.append({'feature_name': "FTP-Req-Bytes-Hex", 'values': feature_vect_list})
+                # HTTP-S Related Features
+                if featureName == "HTTP-S-Req-Bytes-Hex" or featureName == "All-HTTP-S":
+                    feature_vect_list = pcap_feat.getFtpReqBytesHex()
+                    self.logger.debug("HTTP-S-Req-Bytes-Hex #: %i" % len(feature_vect_list))
+                    feature_dict_list.append({'feature_name': "HTTP-S-Req-Bytes-Hex", 'values': feature_vect_list})
+                # POP3 Related Features
+                if featureName == "POP3-Req-Bytes-Hex" or featureName == "All-FTP":
+                    feature_vect_list = pcap_feat.getFtpReqBytesHex()
+                    self.logger.debug("POP3-Req-Bytes-Hex #: %i" % len(feature_vect_list))
+                    feature_dict_list.append({'feature_name': "POP3-Req-Bytes-Hex", 'values': feature_vect_list})
+
 
                 self.logger.debug("Req Len seq len: %i" % len(feature_vect_list))
-                self.logger.debug("Number of features being captured: %i" % len(feature_dict_list))
-                self.logger.debug("First Feature: %s" % feature_dict_list[0]['feature_name'])
-                # self.logger.debug("First Feature: %s" % feature_dict_list[0]['feature_name_1'])
-                #self.logger.debug("2nd Feature: %s" % feature_dict_list[1]['feature_name_2'])
+                self.logger.debug("Number of features being captured <feature_dict_list>: %i" % len(feature_dict_list))
+                if len(feature_dict_list) > 0:
+                    self.logger.debug("First Feature: %s" % feature_dict_list[0]['feature_name'])
+                    # self.logger.debug("First Feature: %s" % feature_dict_list[0]['feature_name_1'])
+                    #self.logger.debug("2nd Feature: %s" % feature_dict_list[1]['feature_name_2'])
 
                 self.logger.debug("Populating feature vector from PCAP [%s]" % (curr_pcap_file_name))
                 #Add PCAP file name as primary key (at the head of the list)
@@ -123,20 +146,20 @@ class TunnelFeatureExtractorJSON(object):
                 # vect_csv_writer.writerow(feature_vect_row)
                 #vect_csv_writer.writerow(feature_vect_list)
 
-                if featureName == 'All':
-                    json_obj_str = {'filename': curr_pcap_file_name,
-                                    'pcap-Md5-hash': '',
-                                    'protocol': protoLabel,
-                                    'props': feature_dict_list}
-                                    # 'props': features_json_str}
-                                    # 'props': feature_dict_list} #features_json_str
-                else:
-                    json_obj_str = {'filename': curr_pcap_file_name,
-                               'pcap-Md5-hash': '',
-                               'protocol': protoLabel,
-                               'props': {'feature-name': featureName,
-                                         'values': feature_vect_list}}
-                    # Ideally for the values i'd need square brackets [], but since it's a list it is recognized
+                # if featureName == 'All':
+                json_obj_str = {'filename': curr_pcap_file_name,
+                                'pcap-Md5-hash': '',
+                                'protocol': protoLabel,
+                                'props': feature_dict_list}
+                                # 'props': features_json_str}
+                                # 'props': feature_dict_list} #features_json_str
+                # else:
+                #     json_obj_str = {'filename': curr_pcap_file_name,
+                #                'pcap-Md5-hash': '',
+                #                'protocol': protoLabel,
+                #                'props': [{'feature-name': featureName,
+                #                          'values': feature_vect_list}]}
+                #     # Ideally for the values i'd need square brackets [], but since it's a list it is recognized
 
                 with open(curr_feature_filePath, mode='w') as json_feature_file:
                     json.dump(json_obj_str, json_feature_file, indent=4, sort_keys=True)
@@ -176,4 +199,18 @@ featureExt = TunnelFeatureExtractorJSON()
 # featureExt.get_feature_vectors_and_write_to_file("HTTP-S-ovDNS-Static", "All")      # <---- Works
 # featureExt.get_feature_vectors_and_write_to_file("HTTP-S-ovDNS-Dyn", "All")      # <---- Works
 
-featureExt.get_feature_vectors_and_write_to_file("POP3ovDNS-DL", "All")      # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("POP3ovDNS-DL", "All")      # <---- Works
+
+# # Ground truths for old experiments
+# # HTTP
+#featureExt.get_feature_vectors_and_write_to_file("HTTP-ground", "HTTP-Req-Bytes-Hex")
+# # FTP
+# featureExt.get_feature_vectors_and_write_to_file("FTP-ground", "FTP-Req-Bytes-Hex")
+# # HTTP-S
+featureExt.get_feature_vectors_and_write_to_file("HTTP-S-ground", "HTTP-S-Req-Bytes-Hex")
+
+# Data set for old experiments
+# # HTTP-ovDNS
+# featureExt.get_feature_vectors_and_write_to_file("http-ovDNS-test2", "All")
+# # FTP-ovDNS
+# featureExt.get_feature_vectors_and_write_to_file("ftp-ovDNS-test-old", "All")

@@ -132,7 +132,7 @@ class PcapFeatures(object):
 
         return self.dnsReqQnames
 
-    def getDnsReqDataEntropy_upstream(self):
+    def getDnsReqQnameEntropy_upstream(self):
         # From the documentation /reverse engineering Iodine (IP-Over-DNS) by Stalkr it is seen that:
         #  - Client (upstream) REQUESTS are encoded, compressed and placed into the 'DNS Query Name', while
         #  - Server (downstream) RESPONSES are only optionally compressed and placed into the 'DNS Resource Record'.
@@ -227,10 +227,65 @@ class PcapFeatures(object):
 #                                 for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 80]
 #         return self.specificPktLens
 
+# #---------------------------------####
+# ###### HTTP-S related Methods     ####
+# #---------------------------------####
+
+    def getHttp_S_ReqBytesHex(self):
+        '''
+        Get the Bytes of only the HTTP-S Request characters in TCP packets
+        that have a payload and have the destination port = 443
+        Change them to hex and convert the byte array into a hex string (each pair of hex values represents a byte)
+        :return:
+        '''
+        # self.pktCharSeq = [(pkt[IP][TCP][Raw].load).decode()  # <--- Will get HTTP Request strings in normal ascii text
+        self.pktCharSeq = [b2a.hexlify(bytes(pkt[IP][TCP][Raw].load)).decode()
+                                  for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 443]
+        return self.pktCharSeq
+
+    def getHttp_S_ReqEntropy(self):
+        '''
+        Get the Entropy of only the HTTP-S Request characters in TCP packets
+        that have a payload and have the destination port = 443
+        :return:
+        '''
+        self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(pkt[IP][TCP][Raw].load)))
+                                  for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 443]
+        return self.pktCharEntropySeq
+
+# #---------------------------------#
+# ###### POP3 related Methods   ######
+# #---------------------------------#
+    def getPop3ReqBytesHex(self):
+        '''
+        Get the Bytes of only the POP3 Request characters in TCP packets
+        that have a payload and have the destination port = 110
+        Change them to hex and convert the byte array into a hex string (each pair of hex values represents a byte)
+        :return:
+        '''
+        # self.pktCharSeq = [(pkt[IP][TCP][Raw].load).decode()  # <--- Will get HTTP Request strings in normal ascii text
+        self.pktCharSeq = [b2a.hexlify(bytes(pkt[IP][TCP][Raw].load)).decode()
+                                  for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 110]
+        return self.pktCharSeq
+
+
 
 # #---------------------------------#
 # ###### FTP related Methods   ######
 # #---------------------------------#
+
+    def getFtpReqBytesHex(self):
+        '''
+        Get the Bytes of only the FTP Request characters in TCP packets
+        that have a payload and have the destination port = 21
+        Change them to hex and convert the byte array into a hex string (each pair of hex values represents a byte)
+        :return:
+        '''
+        # self.pktCharSeq = [(pkt[IP][TCP][Raw].load).decode()  # <--- Will get HTTP Request strings in normal ascii text
+        self.pktCharSeq = [b2a.hexlify(bytes(pkt[IP][TCP][Raw].load)).decode()
+                                  for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 21]
+        return self.pktCharSeq
+
 #     def getftpReqLen(self):
 #         self.specificPktLens = [len(pkt[IP][TCP][Raw].load)
 #                                 for pkt in self.pktReader if TCP in pkt and Raw in pkt and pkt[TCP].dport == 21]
