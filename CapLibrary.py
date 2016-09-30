@@ -265,6 +265,14 @@ class CapLibrary(object):
 # httpsOvDnsCapLib.load_only_pcap_paths_to_Lib('HTTP-S-ovDNS-Dyn')
 
 # # Adding POP3ovDNS-Static PCAP paths to capbase
-pop3OvDnsCapLib = CapLibrary()
-pop3OvDnsCapLib.load_only_pcap_paths_to_Lib('POP3ovDNS-DL')
+# pop3OvDnsCapLib = CapLibrary()
+# pop3OvDnsCapLib.load_only_pcap_paths_to_Lib('POP3ovDNS-DL')
+
+# # Adding HTTP-S plain/ground truth to capbase
+# http_s_groundCapLib = CapLibrary()
+# http_s_groundCapLib.load_only_pcap_paths_to_Lib('HTTP-S-ground')
+
+# # Adding POP plain/ground truth to capbase
+# pop3_groundCapLib = CapLibrary()
+# pop3_groundCapLib.load_only_pcap_paths_to_Lib('POP3-ground')
 
