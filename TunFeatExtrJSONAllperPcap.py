@@ -118,12 +118,12 @@ class TunnelFeatureExtractorJSON(object):
                     feature_dict_list.append({'feature_name': "FTP-Req-Bytes-Hex", 'values': feature_vect_list})
                 # HTTP-S Related Features
                 if featureName == "HTTP-S-Req-Bytes-Hex" or featureName == "All-HTTP-S":
-                    feature_vect_list = pcap_feat.getFtpReqBytesHex()
+                    feature_vect_list = pcap_feat.getHttp_S_ReqBytesHex()
                     self.logger.debug("HTTP-S-Req-Bytes-Hex #: %i" % len(feature_vect_list))
                     feature_dict_list.append({'feature_name': "HTTP-S-Req-Bytes-Hex", 'values': feature_vect_list})
                 # POP3 Related Features
-                if featureName == "POP3-Req-Bytes-Hex" or featureName == "All-FTP":
-                    feature_vect_list = pcap_feat.getFtpReqBytesHex()
+                if featureName == "POP3-Req-Bytes-Hex" or featureName == "All-POP3":
+                    feature_vect_list = pcap_feat.getPop3ReqBytesHex()
                     self.logger.debug("POP3-Req-Bytes-Hex #: %i" % len(feature_vect_list))
                     feature_dict_list.append({'feature_name': "POP3-Req-Bytes-Hex", 'values': feature_vect_list})
 
@@ -201,13 +201,15 @@ featureExt = TunnelFeatureExtractorJSON()
 
 # featureExt.get_feature_vectors_and_write_to_file("POP3ovDNS-DL", "All")      # <---- Works
 
-# # Ground truths for old experiments
+# # Ground truths for old experiments (and their extensions with the new data set)
 # # HTTP
 #featureExt.get_feature_vectors_and_write_to_file("HTTP-ground", "HTTP-Req-Bytes-Hex")
 # # FTP
 # featureExt.get_feature_vectors_and_write_to_file("FTP-ground", "FTP-Req-Bytes-Hex")
 # # HTTP-S
 featureExt.get_feature_vectors_and_write_to_file("HTTP-S-ground", "HTTP-S-Req-Bytes-Hex")
+# # POP3
+# featureExt.get_feature_vectors_and_write_to_file("POP3-ground", "POP3-Req-Bytes-Hex")
 
 # Data set for old experiments
 # # HTTP-ovDNS
