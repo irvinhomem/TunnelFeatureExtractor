@@ -51,6 +51,7 @@ class CapLibrary(object):
         return
 
     def load_only_pcap_paths_to_Lib(self, protocol_base='unknown'):
+        # This will fire both when loading pcap paths to capbase and when extracting features from capbase paths to JSON
         file_paths = filedialog.askopenfilenames(**self.file_opt)
 
         # If protocol base is not known, ASK!
