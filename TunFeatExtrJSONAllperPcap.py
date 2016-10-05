@@ -199,7 +199,7 @@ featureExt = TunnelFeatureExtractorJSON()
 # featureExt.get_feature_vectors_and_write_to_file("HTTP-S-ovDNS-Static", "All")      # <---- Works
 # featureExt.get_feature_vectors_and_write_to_file("HTTP-S-ovDNS-Dyn", "All")      # <---- Works
 
-# featureExt.get_feature_vectors_and_write_to_file("POP3ovDNS-DL", "All")      # <---- Works
+featureExt.get_feature_vectors_and_write_to_file("POP3ovDNS-DL", "All")      # <---- Works
 
 # # Ground truths for old experiments (and their extensions with the new data set)
 # # HTTP
@@ -207,7 +207,7 @@ featureExt = TunnelFeatureExtractorJSON()
 # # FTP
 # featureExt.get_feature_vectors_and_write_to_file("FTP-ground", "FTP-Req-Bytes-Hex")
 # # HTTP-S
-featureExt.get_feature_vectors_and_write_to_file("HTTP-S-ground", "HTTP-S-Req-Bytes-Hex")
+# featureExt.get_feature_vectors_and_write_to_file("HTTP-S-ground", "HTTP-S-Req-Bytes-Hex")
 # # POP3
 # featureExt.get_feature_vectors_and_write_to_file("POP3-ground", "POP3-Req-Bytes-Hex")
 
