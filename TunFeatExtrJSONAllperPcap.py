@@ -106,6 +106,14 @@ class TunnelFeatureExtractorJSON(object):
                     feature_vect_list = pcap_feat.getDnsReqQnameEntropy_upstream()
                     self.logger.debug("DNS-Req-Qnames-Enc-Comp-Entropy #: %i" % len(feature_vect_list))
                     feature_dict_list.append({'feature_name': "DNS-Req-Qnames-Enc-Comp-Entropy", 'values': feature_vect_list})
+                if featureName == "DNS-Req-Qnames-Enc-Comp-Entropy-50-bytes" or featureName == "All":
+                    feature_vect_list = pcap_feat.getDnsReqQnameEntropy_upstream_x_bytes(50)
+                    self.logger.debug("DNS-Req-Qnames-Enc-Comp-Entropy-50-bytes #: %i" % len(feature_vect_list))
+                    feature_dict_list.append({'feature_name': "DNS-Req-Qnames-Enc-Comp-Entropy-50-bytes", 'values': feature_vect_list})
+                if featureName == "DNS-Req-Qnames-Enc-Comp-Entropy-20-bytes" or featureName == "All":
+                    feature_vect_list = pcap_feat.getDnsReqQnameEntropy_upstream_x_bytes(20)
+                    self.logger.debug("DNS-Req-Qnames-Enc-Comp-Entropy-20-bytes #: %i" % len(feature_vect_list))
+                    feature_dict_list.append({'feature_name': "DNS-Req-Qnames-Enc-Comp-Entropy-20-bytes", 'values': feature_vect_list})
                 # HTTP Related Features
                 if featureName == "HTTP-Req-Bytes-Hex" or featureName == "All-HTTP":
                     feature_vect_list = pcap_feat.getHttpReqBytesHex()
@@ -199,7 +207,13 @@ featureExt = TunnelFeatureExtractorJSON()
 # featureExt.get_feature_vectors_and_write_to_file("HTTP-S-ovDNS-Static", "All")      # <---- Works
 # featureExt.get_feature_vectors_and_write_to_file("HTTP-S-ovDNS-Dyn", "All")      # <---- Works
 
-featureExt.get_feature_vectors_and_write_to_file("POP3ovDNS-DL", "All")      # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("POP3ovDNS-DL", "All")      # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("POP3ovDNS-DL-5-ATT", "All")      # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("POP3ovDNS-DL-3emails-ATT", "All")      # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("POP3ovDNS-DL-7emails-ATT", "All")      # <---- Works
+# featureExt.get_feature_vectors_and_write_to_file("POP3ovDNS-DL-5txt-ATT", "All")      # <---- Works
+featureExt.get_feature_vectors_and_write_to_file("POP3ovDNS-DL-Mixed", "All")      # <---- Works
+
 
 # # Ground truths for old experiments (and their extensions with the new data set)
 # # HTTP
