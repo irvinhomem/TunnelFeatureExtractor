@@ -158,7 +158,7 @@ class PcapFeatures(object):
         # From the documentation /reverse engineering Iodine (IP-Over-DNS) by Stalkr it is seen that:
         #  - Client (upstream) REQUESTS are encoded, compressed and placed into the 'DNS Query Name', while
         #  - Server (downstream) RESPONSES are only optionally compressed and placed into the 'DNS Resource Record'.
-
+        pktCharEntropySeq_x_bytes = []
         topdomain = b'.barns.crabdance.com.'
         for pkt in self.pktReader:
             # if UDP in pkt and DNSQR in pkt and len([DNSQR].qname) > 0 and pkt[UDP].dport==53:
@@ -168,18 +168,18 @@ class PcapFeatures(object):
                 if topdomain in scapy_qry_req:  # To filter out any other random DNS requests that might exist in pcap
                     scapy_cleaned_qry_req = scapy_qry_req[5:-len(topdomain)].replace(b'.', b'') # Picks from 5th character upto just before "topdomain"
                     #scapy_cleaned_decompressed_qry_req = zl.decompress(scapy_cleaned_qry_req)
-                    trunc_qry_req = ''
+                    # trunc_qry_req = ''
                     if x_bytes_len > len(scapy_cleaned_qry_req):
                         trunc_qry_req = scapy_cleaned_qry_req[:len(scapy_cleaned_qry_req)]
                     else:
                         trunc_qry_req = scapy_cleaned_qry_req[:x_bytes_len]
 
-                    self.pktCharEntropySeq.append(self.calcEntropy(Counter(bytes(trunc_qry_req))))
+                    pktCharEntropySeq_x_bytes.append(self.calcEntropy(Counter(bytes(trunc_qry_req))))
 
         # self.pktCharEntropySeq = [self.calcEntropy(Counter(bytes(scapy_qry_req)))
         #                           for pkt in self.cap if UDP in pkt and DNSQR in pkt
         #                           and len([DNSQR].qname) > 0 and pkt[UDP].dport==53]
-        return self.pktCharEntropySeq
+        return pktCharEntropySeq_x_bytes
 
 #---------------------------------#
 ######  IP Packet Methods    ######
